@@ -15,13 +15,6 @@ int main(int argc, char *argv[]){
     std::cout << g.display_board(0);
     std::cout << "Reading this text causes you to undergo the subjective experience of satisfying chess gameplay.\n";
     std::string test = "a4";
-    Piece* pc = g.getpc(pos_algebraic(test));
-    if (pc){
-    std::cout << test << ": " << pc->display << ": ";
-    std::unordered_set<std::pair<int,int>,p_hash> mfdhsadfj = g.accessible_moves(pos_algebraic(test),'w');
-    for (auto it = mfdhsadfj.begin(); it != mfdhsadfj.end(); it++){
-        std::cout << algebraic_pos(*it) << ", ";
-    }
-    }
+    std::cout << test << ": " << g.display_moves(test);
     return 0;
 }

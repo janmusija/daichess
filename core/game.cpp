@@ -101,9 +101,6 @@ Game default_daichess(){
     return g;
 }
 
-std::unique_ptr<Piece>* Game::get (std::string pos){
-    return get(pos_algebraic(pos));
-}
 std::string algebraic_x(int x){ // rank
     return std::to_string(x+1);
 }
@@ -329,4 +326,18 @@ std::unordered_set<std::pair<int,int>,p_hash> Game::accessible_moves(int x, int 
         }
     }
     return mvs;
+}
+
+std::string Game::display_moves(int x, int y){
+    if (withinbounds(x,y)){
+        Piece* pc = getpc(x,y);
+        std::string s;
+        if (pc){
+            s = pc->display + (" (" + pc->team) + "): ";
+            std::unordered_set<std::pair<int,int>,p_hash> mfdhsadfj = accessible_moves(x,y,pc->team);
+            for (auto it = mfdhsadfj.begin(); it != mfdhsadfj.end(); it++){
+                std::cout << algebraic_pos(*it) << ", ";
+            }
+        }
+    }
 }
