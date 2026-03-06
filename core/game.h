@@ -52,8 +52,8 @@ public:
     // utility info
     std::string display_board(bool side);
     std::string display_moves(int x, int y);
-    std::string display_moves(std::pair<int,int>xy){display_moves(xy.first,xy.second);};
-    std::string display_moves(std::string s) {display_moves(pos_algebraic(s));};
+    std::string display_moves(std::pair<int,int>xy){return display_moves(xy.first,xy.second);};
+    std::string display_moves(std::string s) {return display_moves(pos_algebraic(s));};
 };
 
 Game default_daichess();

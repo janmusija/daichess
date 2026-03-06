@@ -14,7 +14,11 @@ int main(int argc, char *argv[]){
     Game g = default_daichess();
     std::cout << g.display_board(0);
     std::cout << "Reading this text causes you to undergo the subjective experience of satisfying chess gameplay.\n";
-    std::string test = "a4";
-    std::cout << test << ": " << g.display_moves(test);
+    std::string test = "a13";
+    std::cout << test << ": " << g.display_moves(test) << "\n";
+    test = "f1";
+    std::cout << test << ": " << g.display_moves(test) << "\n";
+    test = "b2";
+    std::cout << test << ": " << g.display_moves(test) << "\n";
     return 0;
 }
