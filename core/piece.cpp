@@ -8,14 +8,14 @@
 
 void Moveset::addmove(std::pair<int,int> m,bool isride, int mc, int aux){
     if (isride){
-        if (mc =< 0) { // captures
+        if (mc <= 0) { // captures
             crides.insert({m,aux});
         }
         if (mc >= 0){ //moves
             mrides.insert({m,aux});
         }
     } else {
-        if (mc =< 0) { // captures
+        if (mc <= 0) { // captures
             cleaps.insert({m,aux});
         }
         if (mc >= 0){ //moves
@@ -23,6 +23,8 @@ void Moveset::addmove(std::pair<int,int> m,bool isride, int mc, int aux){
         }
     }
 }
+
+Moveset::Moveset(){}
 
 Moveset::Moveset(std::string bnot){
     char firstdir = ' ';
@@ -51,40 +53,40 @@ Moveset::Moveset(std::string bnot){
                 ride = 1;
                 nexti++;
             }
-            std::pair(int,int) move;
+            std::pair<int,int> mov;
             switch (bnot[i]){
                 case 'R' :
                     ride = 1;
                 // NO break
                 case 'W' : 
-                    move = std::make_pair(1,0);
+                    mov = std::make_pair(1,0);
                 break;
                 case 'B' :
                     ride = 1;
                 // NO break
                 case 'F' : 
-                    move = std::make_pair(1,1);
+                    mov = std::make_pair(1,1);
                 break;
                 case 'D' : 
-                    move = std::make_pair(2,0);
+                    mov = std::make_pair(2,0);
                 break;
                 case 'N' : 
-                    move = std::make_pair(2,1);
+                    mov = std::make_pair(2,1);
                 break;
                 case 'A' : 
-                    move = std::make_pair(2,2);
+                    mov = std::make_pair(2,2);
                 break;
                 case 'H' : 
-                    move = std::make_pair(3,0);
+                    mov = std::make_pair(3,0);
                 break;
                 case 'C' : 
-                    move = std::make_pair(3,1);
+                    mov = std::make_pair(3,1);
                 break;
                 case 'Z' : 
-                    move = std::make_pair(3,2);
+                    mov = std::make_pair(3,2);
                 break;
-                case 'H' : 
-                    move = std::make_pair(3,3);
+                case 'G' : 
+                    mov = std::make_pair(3,3);
                 break;
             }
 
@@ -93,11 +95,11 @@ Moveset::Moveset(std::string bnot){
             if (njflag){
                 aux = -aux-1;
             }
-            std::pair<int,int> move2 = move;
+            std::pair<int,int> move2 = mov;
             bool usem2 = 0;
-            if (move.first != move.second){
-                move2.first = move.second;
-                move2.second = move.first;
+            if (mov.first != mov.second){
+                move2.first = mov.second;
+                move2.second = mov.first;
                 usem2 = 1;
             }
             /*
@@ -110,32 +112,32 @@ Moveset::Moveset(std::string bnot){
             -x
             */
             {
-                if (firstdir == ' ' || firstdir == 'f' && (secondir == 'r' || secondir == ' ')){
-                    addmove(move, ride, moves - captures, aux);
+                if (firstdir == ' ' || (firstdir == 'f' && (secondir == 'r' || secondir == ' '))){
+                    addmove(mov, ride, moves - captures, aux);
                     if (usem2){
                         addmove(move2, ride, moves-captures, aux);
                     }
                 }
-                move.second = -move.second;
+                mov.second = -mov.second;
                 move2.second = -move2.second;
-                if (firstdir == ' ' || firstdir == 'f' && (secondir == 'l' || secondir == ' ')){
-                    addmove(move, ride, moves - captures, aux);
+                if (firstdir == ' ' || (firstdir == 'f' && (secondir == 'l' || secondir == ' '))){
+                    addmove(mov, ride, moves - captures, aux);
                     if (usem2){
                         addmove(move2, ride, moves-captures, aux);
                     }
                 }
-                move.first = -move.first;
+                mov.first = -mov.first;
                 move2.first = -move2.first;
-                if (firstdir == ' ' || firstdir == 'b' && (secondir == 'l' || secondir == ' ')){
-                    addmove(move, ride, moves - captures, aux);
+                if (firstdir == ' ' || (firstdir == 'b' && (secondir == 'l' || secondir == ' '))){
+                    addmove(mov, ride, moves - captures, aux);
                     if (usem2){
                         addmove(move2, ride, moves-captures, aux);
                     }
                 }
-                move.second = -move.second;
+                mov.second = -mov.second;
                 move2.second = -move2.second;
-                if (firstdir == ' ' || firstdir == 'b' && (secondir == 'r' || secondir == ' ')){
-                    addmove(move, ride, moves - captures, aux);
+                if (firstdir == ' ' || (firstdir == 'b' && (secondir == 'r' || secondir == ' '))){
+                    addmove(mov, ride, moves - captures, aux);
                     if (usem2){
                         addmove(move2, ride, moves-captures, aux);
                     }
@@ -164,20 +166,25 @@ Moveset::Moveset(std::string bnot){
 
 Piece::Piece(std::string disp, std::string bnot, char tm){
     display = disp;
-    moves = Moveset(bnot);
+    betza = bnot;
     team = tm;
     royal = 0;
+    if (bnot == "Q"){
+        bnot = "RB";
+    }
     if (bnot == "K"){ // king
         royal = 1;
-        flag.insert("uncastled");
+        bnot = "WF";
     } else if (bnot == "P"){ // pawn
         bnot = "fmWfcF";
         flag.insert("p"); // pawns are janky and subject to many additional rules
-    } else if (bnot == "R") { // rook
-        flag.insert("uncastled"); // in case you're curious, I *will* make it officially legal in my implementation that you can castle vertically under absurd circumstances
     }
+    moves = Moveset(bnot);
 }
 
 void Piece::initialize(){
-    
+    flag.insert("i");
+    if (betza == "K" || betza == "R"){
+        flag.insert("uncastled");
+    }
 }

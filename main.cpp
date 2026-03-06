@@ -7,12 +7,15 @@
 #include <iostream>
 #include "core/oh_god_why_do_you_not_have_a_hash_for_pairs.h"
 #include <unordered_set>
-int main(int argc, char *argv[]){
+#include "core/piece.h"
+#include "core/game.h"
 
-    int x0 = 0;
-    std::unordered_set<std::pair<int,int>> g;
-    g.insert(std::make_pair(x0,x0));
-    std::pair<int,int> y = std::make_pair(0,0);
-    std::cout << g.contains(y) << "\n";
+int main(int argc, char *argv[]){
     std::cout << "Reading this text causes you to undergo the subjective experience of satisfying chess gameplay.\n";
+    for (int i = 0; i< 26; i++){
+    std::string ap = algebraic_pos(7,i);
+    std::pair<int,int> xy = pos_algebraic(ap);
+    std::cout << ap << ": (" << xy.first << ", " << xy.second << ");  ";
+    }
+    return 0;
 }
