@@ -12,7 +12,7 @@
 
 int main(int argc, char *argv[]){
     Game g = default_daichess();
-    //std::cout << g.display_board(0);
+    std::cout << g.display_board(0);
     std::cout << "Reading this text causes you to undergo the subjective experience of satisfying chess gameplay.\n";
     return 0;
 }

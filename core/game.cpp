@@ -11,8 +11,14 @@
 #define DISPLAYLEN 3
 
 Game::Game(int x, int y){
-    std::vector<char> p = {'w','b'};
-    Game(x,y,std::move(p));
+    board.clear();
+    players = {'w','b'};
+    width = y;
+    height = x;
+    for (int i = 0; i<x; i++){
+        std::vector<Piece*> tmp(y,nullptr);
+        board.push_back(tmp);
+    }
 }
 
 Game::Game(int x, int y, std::vector<char>&& p){
@@ -21,26 +27,27 @@ Game::Game(int x, int y, std::vector<char>&& p){
     width = y;
     height = x;
     for (int i = 0; i<x; i++){
-        std::vector<Piece*> tmp(width,nullptr);
-        std::cout << tmp.size();
+        std::vector<Piece*> tmp(y,nullptr);
         board.push_back(tmp);
     }
-    std::cout << board.size();
 }
 
-void Game::placepiece(int x, int y, std::string betza, char tm){
+bool Game::placepiece(int x, int y, std::string betza, char tm){
     std::string b = betza;
     b.resize(DISPLAYLEN);
-    placepiece(x,y,b,betza,tm);
+    return placepiece(x,y,b,betza,tm);
 }
 
-void Game::placepiece(int x, int y, std::string disp, std::string betza, char tm){
-    if (betza == ""){return;}
-    else if (board.size() < x || x < 0 || board[x].size() < y || y < 0){return;}
+#include <iostream>
+bool Game::placepiece(int x, int y, std::string disp, std::string betza, char tm){
+    if (betza == ""){return 0;}
+    else if (board.size() <= x || x < 0 || board[x].size() <= y || y < 0){return 0;}
     else {
         Piece pc = Piece(disp,betza,tm);
         board[x][y] = &pc;
+        std::cout << x << ", " << y << "  ";
     }
+    return 1;
 }
 
 Game default_daichess(){
@@ -140,8 +147,8 @@ std::pair<int,int> pos_algebraic(std::string s){ // rank is x coord
 }
 
 std::string Game::display_board(bool side){
-    std::string s;
-    if (side) { 
+    std::string s = std::to_string(height);
+    if (!side) { 
     /*   rank
          +
          ^
@@ -153,13 +160,13 @@ std::string Game::display_board(bool side){
     */
     for (int i = (int)height-1; i>=0; --i){
         for (int j = 0; j < (int)width; ++j){
-            if (i<(int)board.size() && j < (int)board[i].size() && (board[i][j])){
-                s+= board[i][j]->display;
+            if (i >= 0 && j >= 0 && i<(int)board.size() && j < (int)board[i].size() && (board[i][j])){
+                s= s+ board[i][j]->display;
             }
             else {s+= std::string(' ',DISPLAYLEN);}
-            s+=" ";
+            s+=' ';
         }
-        s+= "\n";
+        s+= '\n';
     }
     } else {
     /*   rank
@@ -173,13 +180,13 @@ std::string Game::display_board(bool side){
     */
     for (int i = 0; i < (int)height; ++i){
         for (int j =(int)width-1; j >=0; --j){
-            if (i<(int)board.size() && j < (int)board[i].size() && (board[i][j])){
-                s+= board[i][j]->display;
+            if (i >= 0 && j>= 0 && i<(int)board.size() && j < (int)board[i].size() && (board[i][j])){
+                s= s+ board[i][j]->display;
             }
             else {s+= std::string(' ',DISPLAYLEN);}
-            s+=" ";
+            s+=' ';
         }
-        s+= "\n";
+        s+= '\n';
     }
     }
     return s;
