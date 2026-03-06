@@ -25,6 +25,7 @@ public:
     }
     unsigned int width; // i.e. number of files a - p
     unsigned int height; // i.e. number of ranks 1-16
+    std::string algebraic_history; //move history of the game
     Game(int x,int y);
     Game(int x,int y, std::vector<char> &&p);
     std::vector<char> players;

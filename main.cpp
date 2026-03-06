@@ -9,6 +9,7 @@
 #include <unordered_set>
 #include "core/piece.h"
 #include "core/game.h"
+#include "player/player.h"
 
 int main(int argc, char *argv[]){
     Game g = default_daichess();
@@ -20,9 +21,9 @@ int main(int argc, char *argv[]){
     std::cout << test << ": " << g.display_moves(test) << "\n";
     test = "b2";
     std::cout << test << ": " << g.display_moves(test) << "\n";
-    g.mov("b2","d5");
+    player_move(g,1,1,3,4,'w');
     std::cout << g.display_board(0);
-    g.mov("b3","o15"); // illegal move
-    std::cout << g.display_board(0); // still possible-- so check legality of move before doing it!
+    player_move(g,2,1,14,14,'w'); // illegal move
+    std::cout << g.display_board(0); 
     return 0;
 }
