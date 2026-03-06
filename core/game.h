@@ -21,7 +21,7 @@ class Game {
 public:
     std::vector<std::vector<std::unique_ptr<Piece>>> board;
     bool withinbounds(int x, int y){
-        return (x>= 0 && x < board.size() && y >= 0 && y<board[x].size());
+        return (x>= 0 && x < (int) board.size() && y >= 0 && y<(int) board[x].size());
     }
     unsigned int width; // i.e. number of files a - p
     unsigned int height; // i.e. number of ranks 1-16

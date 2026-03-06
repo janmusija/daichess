@@ -33,7 +33,7 @@ Moveset::Moveset(std::string bnot){
     bool moves = 1;
     bool njflag = 0;
     int i = 0;
-    while (i < bnot.length()){
+    while (i < (int) bnot.length()){
         if (bnot[i] == 'm' ) {
             captures = 0;
             moves = 1;
@@ -49,7 +49,7 @@ Moveset::Moveset(std::string bnot){
             int nexti = i+1;
             bool ride = 0;
             int aux = 0;
-            if (bnot.length() > i+1 && bnot[i+1] == bnot[i]){
+            if ((int) bnot.length() > i+1 && bnot[i+1] == bnot[i]){
                 ride = 1;
                 nexti++;
             }
@@ -57,13 +57,15 @@ Moveset::Moveset(std::string bnot){
             switch (bnot[i]){
                 case 'R' :
                     ride = 1;
-                // NO break
+                    mov = std::make_pair(1,0);
+                break;
                 case 'W' : 
                     mov = std::make_pair(1,0);
                 break;
                 case 'B' :
                     ride = 1;
-                // NO break
+                    mov = std::make_pair(1,1);
+                break;
                 case 'F' : 
                     mov = std::make_pair(1,1);
                 break;

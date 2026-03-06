@@ -13,3 +13,5 @@
 
 // currently supported: individually specifying directions one at a time, from fblr.
 // WFDNAHCZG
+
+// I realize that this file can be removed, I guess.
