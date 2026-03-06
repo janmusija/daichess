@@ -275,7 +275,7 @@ std::unordered_set<std::pair<int,int>,p_hash> Game::accessible_moves(int x, int 
         aux = it->second; if (aux < 0){njflag = 1; aux = -aux-1;}
         int x1 = ((it->first.first)*f_sn)+x; // it->first is the move. it->second is the aux value
         int y1 = ((it->first.second)*r_sn)+y;
-        if (x1 < 0 || x1 >(int) board.size() || y1 < 0 || y1 > (int) board[x1].size()){
+        if (x1 >= 0 && x1 < (int) board.size() && y1 >= 0 && y1 < (int) board[x1].size()){
             if (!(board[x1][y1])){
                 mvs.insert(std::make_pair(x1,y1));
             }
@@ -285,7 +285,7 @@ std::unordered_set<std::pair<int,int>,p_hash> Game::accessible_moves(int x, int 
         aux = it->second; if (aux < 0){njflag = 1; aux = -aux-1;}
         int x1 = ((it->first.first)*f_sn)+x;
         int y1 = ((it->first.second)*r_sn)+y;
-        if (x1 < 0 || x1 >(int) board.size() || y1 < 0 || y1 > (int) board[x1].size()){
+        if (x1 >= 0 && x1 < (int) board.size() && y1 >= 0 && y1 < (int) board[x1].size()){
             if ((board[x1][y1])&&(board[x1][y1]->team != curr_pl)){
                 mvs.insert(std::make_pair(x1,y1));
             }
@@ -299,7 +299,7 @@ std::unordered_set<std::pair<int,int>,p_hash> Game::accessible_moves(int x, int 
         while (aux == 0 || dist < aux){
             x1 += ((it->first.first)*f_sn);
             y1 += ((it->first.second)*r_sn);
-            if (x1 < 0 || x1 >(int) board.size() || y1 < 0 || y1 > (int) board[x1].size()){
+            if (x1 >= 0 && x1 < (int) board.size() && y1 >= 0 && y1 < (int) board[x1].size()){
                 if (!(board[x1][y1])){
                     mvs.insert(std::make_pair(x1,y1));
                 } else {break;}
@@ -315,7 +315,7 @@ std::unordered_set<std::pair<int,int>,p_hash> Game::accessible_moves(int x, int 
         while (aux == 0 || dist < aux){
             x1 += ((it->first.first)*f_sn);
             y1 += ((it->first.second)*r_sn);
-            if (x1 < 0 || x1 >(int) board.size() || y1 < 0 || y1 > (int) board[x1].size()){
+            if (x1 >= 0 && x1 < (int) board.size() && y1 >= 0 && y1 < (int) board[x1].size()){
                 if ((board[x1][y1])){
                     if (board[x1][y1]->team != curr_pl){
                         mvs.insert(std::make_pair(x1,y1));
