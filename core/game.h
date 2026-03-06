@@ -19,9 +19,12 @@ public:
     Game(int x,int y);
     Game(int x,int y, std::vector<char> &&p);
     std::vector<char> players;
-    void placepiece(int x, int y, std::string);
+    void placepiece(int x, int y, std::string betza, char team);
+    void placepiece(int x, int y, std::string disp, std::string betza, char team);
     Piece* get (std::string);
+    Piece* get(std::pair<int,int>xy){return board[xy.first][xy.second];};
     Piece* get(int x, int y){return board[x][y];};
+    std::string display_board(bool side);
 };
 
 std::string algebraic_pos(int, int);

@@ -11,11 +11,8 @@
 #include "core/game.h"
 
 int main(int argc, char *argv[]){
+    Game g = default_daichess();
+    //std::cout << g.display_board(0);
     std::cout << "Reading this text causes you to undergo the subjective experience of satisfying chess gameplay.\n";
-    for (int i = 0; i< 26; i++){
-    std::string ap = algebraic_pos(7,i);
-    std::pair<int,int> xy = pos_algebraic(ap);
-    std::cout << ap << ": (" << xy.first << ", " << xy.second << ");  ";
-    }
     return 0;
 }
