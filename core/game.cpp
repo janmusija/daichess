@@ -344,3 +344,15 @@ std::string Game::display_moves(int x, int y){
         return s;
     } else {return "";}
 }
+
+bool Game::mov(int x0, int y0, int x1, int y1){
+    if (withinbounds(x0,y0) && withinbounds(x1,y1) && board[x0][y0]){
+        if (board[x1][y1]){
+            board[x1][y1].reset();
+        }
+        std::swap(board[x0][y0],board[x1][y1]);
+        return 1;
+    } else {
+        return 0;
+    }
+}

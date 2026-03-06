@@ -54,6 +54,11 @@ public:
     std::string display_moves(int x, int y);
     std::string display_moves(std::pair<int,int>xy){return display_moves(xy.first,xy.second);};
     std::string display_moves(std::string s) {return display_moves(pos_algebraic(s));};
+
+    // make a move
+    bool mov(int x0, int y0, int x1, int y1);
+    bool mov(std::pair<int,int>xy0, std::pair<int,int>xy1){return mov(xy0.first,xy0.second,xy1.first,xy1.second);};
+    bool mov(std::string s0, std::string s1){return mov(pos_algebraic(s0),pos_algebraic(s1));};
 };
 
 Game default_daichess();
