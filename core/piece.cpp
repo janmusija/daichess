@@ -41,7 +41,7 @@ Moveset::Moveset(std::string bnot){
             captures = 1;
             moves = 0;
         } else if (bnot[i] == 'n'){
-            njflag = 1;
+            njflag = 1; // nonjump unimplemented
         }
 
         // atomic pieces. Only supported atoms are W F D N A H C Z G and R B
