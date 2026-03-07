@@ -25,5 +25,6 @@ int main(int argc, char *argv[]){
     std::cout << g.display_board(0);
     player_move(g,2,1,14,14,'w'); // illegal move
     std::cout << g.display_board(0); 
+    std::cout << g.accesses(1,0,1,1);
     return 0;
 }

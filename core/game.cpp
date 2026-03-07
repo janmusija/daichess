@@ -333,11 +333,78 @@ std::unordered_set<std::pair<int,int>,p_hash> Game::accessible_moves(int x, int 
 }
 
 bool Game::accesses(int x0, int y0, int x1, int y1){// does not account for check
-    if (haspiece(x0,x1) && withinbounds(y0,y1)){
-        if (board[x0][x1]->team == 'b'){ // really I should implement facing here instead of hardcoding based on team. 
-            //TK
-        } else if (board[x0][x1]->team == 'w'){
-           //TK
+    int f_sn = 1;
+    int r_sn = 1;
+    bool capt = 0;
+    if (haspiece(x0,y0) && withinbounds(x1,y1)){
+        if (board[x0][y0]->team == 'b'){ // really I should implement facing here instead of hardcoding based on team. 
+            f_sn = 1; r_sn = 1;
+        } else if (board[x0][y0]->team == 'w'){
+           f_sn = -1; r_sn = -1;
+        }
+        if (board[x1][y1]){
+            capt = 1;
+        } else {
+            capt = 0;
+        }
+        int xdisp = (x1-x0)*f_sn;
+        int ydisp = (y1-y0)*r_sn;
+        if (capt){
+            // leaps
+            if (board[x0][y0]->moves.cleaps.contains(std::pair(xdisp,ydisp))){return true;}; // todo nonjumping
+
+            // rides
+            for (auto it = board[x0][y0]->moves.crides.begin(); it!=board[x0][y0]->moves.crides.end(); it++){
+                bool njflag = 0;
+                if (xy_divides_zw(it->first.first,it->first.second,xdisp,ydisp)){
+                    int aux = it->second; if (aux < 0){njflag = 1; aux = -aux-1;}
+                    int x_1 = x0;
+                    int y_1 = y0;
+                    int dist = 0;
+                    while (aux == 0 || dist < aux){
+                        x_1 += ((it->first.first)*f_sn);
+                        y_1 += ((it->first.second)*r_sn);
+                        if (withinbounds(x_1,y_1)){
+                            if (x1 == x_1 && y1 == y_1){
+                                return true;
+                            } else {
+                                if (board[x_1][y_1]){
+                                    break;
+                                }
+                            }
+                        } else {break;}
+                        ++dist;
+                    }
+                }
+            }
+        } else {
+            // leaps
+            if (board[x0][y0]->moves.mleaps.contains(std::pair(xdisp,ydisp))) {return true;}; // todo nonjumping
+
+            // rides
+            for (auto it = board[x0][y0]->moves.mrides.begin(); it!=board[x0][y0]->moves.mrides.end(); it++){
+                bool njflag = 0;
+                if (xy_divides_zw(it->first.first,it->first.second,xdisp,ydisp)){
+                    int aux = it->second; if (aux < 0){njflag = 1; aux = -aux-1;}
+                    int x_1 = x0;
+                    int y_1 = y0;
+                    int dist = 0;
+                    while (aux == 0 || dist < aux){
+                        x_1 += ((it->first.first)*f_sn);
+                        y_1 += ((it->first.second)*r_sn);
+                        if (withinbounds(x_1,y_1)){
+                            if (x1 == x_1 && y1 == y_1){
+                                return true;
+                            } else {
+                                if (board[x_1][y_1]){
+                                    break;
+                                }
+                            }
+                        } else {break;}
+                        ++dist;
+                    }
+                }
+            }
         }
     }
     return false;
