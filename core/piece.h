@@ -43,6 +43,7 @@ class Piece {
     std::unordered_set<std::string> flag; // e.g. uncastled; ep; not yet moved; 
     Piece(std::string disp, std::string bnot, char tm); // display string, betza notation, team
     void initialize();
+    Piece(char tm, bool royal); // dummy piece
 };
 
 #endif /* piece.h */

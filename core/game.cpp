@@ -442,3 +442,82 @@ bool Game::mov(int x0, int y0, int x1, int y1){
         return 0;
     }
 }
+
+bool Game::incheck(char pl){
+    if (!royals.contains(pl)){
+        return false;
+    }
+    int rx = royals[pl].first;
+    int ry = royals[pl].second;
+
+    for (int i = 0; i< (int) board.size(); i++){
+        for (int j = 0; j < (int) board[i].size(); j++){
+            if (board[i][j] && board[i][j]->team!= pl){
+                if (accesses(i,j,rx,ry)){
+                    return 1;
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+bool Game::suspend_move(int x0, int y0, int x1, int y1){ // suspend current pieces at (x0,y0) and (x1,y1). place dummy piece of same team as (x0,y0) at (x1,y1)
+    if (haspiece(x0,y0) && withinbounds(x1,y1)){
+        susp_src = std::make_unique<Piece>(board[x0][y0]->team, board[x0][y0]->royal);
+        susp_dest.reset();
+        std::swap(board[x0][y0],susp_src);
+        std::swap(board[x1][y1],susp_dest);
+        std::swap(board[x0][y0],board[x1][y1]);
+        if (board[x0][y0]->royal){
+            royals[board[x0][y0]->team] = std::make_pair(x1,y1);
+        }
+        return 1;
+    }
+    return 0;
+}
+
+void Game::reset_suspension(int x0, int y0, int x1, int y1){ //undo that and destroy dummy piece
+    if (susp_src->royal){
+        royals[susp_src->team] = std::make_pair(x0,y0);
+    }
+    std::swap(board[x0][y0],susp_src);
+    std::swap(board[x1][y1],susp_dest);
+    susp_src.reset();
+    susp_dest.reset();
+}
+
+bool Game::legal(int x0, int y0, int x1, int y1, char pl){
+    if (!accesses(x0,y0,x1,y1)){
+        return false;
+    }
+    if (board[x0][y0]->team != pl){
+        return false;
+    }
+    if (move_into_check_legal){
+        return true;
+    }
+    bool a = suspend_move(x0,y0,x1,y1);
+    bool b = true;
+    if (incheck(pl)){
+        b = false;
+    }
+    if (a) {reset_suspension(x0,y0,x1,y1);}
+    return b;
+    // TK --  ake sure this works
+}
+
+bool Game::hasmoves(char pl){
+    // TK
+}
+
+std::unordered_set<std::pair<int,int>,p_hash> Game::legal_moves(int x, int y, char pl){
+    std::unordered_set<std::pair<int,int>,p_hash> am = accessible_moves(x,y,pl);
+    std::unordered_set<std::pair<int,int>,p_hash> lm;
+    for (auto it = am.begin(); it != am.end(); it++){
+        if (legal(x,y,it->first,it->second,pl)){
+            lm.insert(*it);
+        }
+    }
+    return lm; 
+}

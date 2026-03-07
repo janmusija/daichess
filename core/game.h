@@ -21,6 +21,13 @@ std::pair<int,int> pos_algebraic(std::string s);
 class Game {
 public:
     std::vector<std::vector<std::unique_ptr<Piece>>> board;
+
+private:
+    std::unique_ptr<Piece> susp_src; //allows temporary change of board state
+    std::unique_ptr<Piece> susp_dest;
+    bool suspend_move(int x0, int y0, int x1, int y1); // suspend current pieces at (x0,y0) and (x1,y1). place dummy piece of same team as (x0,y0) at (x1,y1)
+    void reset_suspension(int x0, int y0, int x1l, int y1); //undo that and destroy dummy piece. only do if ^ was successful!
+public:
     bool withinbounds(int x, int y){
         return (x>= 0 && x < (int) board.size() && y >= 0 && y<(int) board[x].size());
     }
@@ -58,6 +65,9 @@ public:
     std::unordered_set<std::pair<int,int>,p_hash> accessible_moves(std::pair<int,int> xy, char curr_pl){return accessible_moves(xy.first,xy.second,curr_pl);};
     bool accesses(int x0, int y0, int x1, int y1);// does not account for check
 
+    bool legal(int x0, int y0, int x1, int y1, char pl); 
+    std::unordered_set<std::pair<int,int>,p_hash> legal_moves(int x, int y, char curr_pl);
+
     bool incheck(char pl);
     bool hasmoves(char pl);
     std::unordered_set<std::pair<int,int>,p_hash> checkless_moves(int x, int y, char curr_pl);
@@ -74,6 +84,9 @@ public:
     bool mov(int x0, int y0, int x1, int y1);
     bool mov(std::pair<int,int>xy0, std::pair<int,int>xy1){return mov(xy0.first,xy0.second,xy1.first,xy1.second);};
     bool mov(std::string s0, std::string s1){return mov(pos_algebraic(s0),pos_algebraic(s1));};
+
+    // game parameters
+    bool move_into_check_legal = false;
 };
 
 Game default_daichess();
@@ -82,7 +95,7 @@ std::string algebraic_x(int x);
 std::string algebraic_y(int y);
 
 inline bool xy_divides_zw(int x, int y, int z, int w){
-    if (x > 0 && z <= 0 || y > 0 && w <= 0 || z > 0 && x <= 0 || w > 0 && y <= 0){
+    if ((x > 0 && z <= 0) || (y > 0 && w <= 0) || (z > 0 && x <= 0) || (w > 0 && y <= 0)){
         return 0;
     }
     if (x < 0){

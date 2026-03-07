@@ -183,6 +183,11 @@ Piece::Piece(std::string disp, std::string bnot, char tm){
     moves = Moveset(bnot);
 }
 
+Piece::Piece(char tm, bool r){
+    team = tm;
+    royal = r;
+}
+
 void Piece::initialize(){
     flag.insert("i");
     if (betza == "K" || betza == "R"){
