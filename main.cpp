@@ -21,7 +21,7 @@ int main(int argc, char *argv[]){
     std::cout << test << ": " << g.display_moves(test) << "\n";
     test = "b2";
     std::cout << test << ": " << g.display_moves(test) << "\n";
-    player_move(g,1,1,3,4,'w');
+    player_move(g,1,1,4,3,'w');
     std::cout << g.display_board(0);
     player_move(g,2,1,14,14,'w'); // illegal move
     std::cout << g.display_board(0); 
