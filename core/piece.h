@@ -39,6 +39,7 @@ class Piece {
     std::string betza; // for export
     bool royal;
     char team; // 'b' or 'w';
+    // todo: implement `char facing`. can be f (rotated to face +x) r (rotated to face +y) b (-x) or l (-y).
     std::unordered_set<std::string> flag; // e.g. uncastled; ep; not yet moved; 
     Piece(std::string disp, std::string bnot, char tm); // display string, betza notation, team
     void initialize();

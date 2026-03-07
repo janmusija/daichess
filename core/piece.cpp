@@ -174,8 +174,7 @@ Piece::Piece(std::string disp, std::string bnot, char tm){
     if (bnot == "Q"){
         bnot = "RB";
     }
-    if (bnot == "K"){ // king
-        royal = 1;
+    if (bnot == "K"){ // king. not automatically royal.
         bnot = "WF";
     } else if (bnot == "P"){ // pawn
         bnot = "fmWfcF";

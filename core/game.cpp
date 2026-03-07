@@ -42,6 +42,10 @@ bool Game::placepiece(int x, int y, std::string disp, std::string betza, char tm
     else if ((int) board.size() <= x || x < 0 || (int) board[x].size() <= y || y < 0){return 0;}
     else {
         board[x][y] = std::make_unique<Piece>(disp,betza,tm);
+        if (betza == "K"){
+            board[x][y]->royal = 1;
+            royals[tm] = std::pair(x,y);
+        }
     }
     return 1;
 }
@@ -328,6 +332,18 @@ std::unordered_set<std::pair<int,int>,p_hash> Game::accessible_moves(int x, int 
     return mvs;
 }
 
+bool Game::accesses(int x0, int y0, int x1, int y1){// does not account for check
+    if (haspiece(x0,x1) && withinbounds(y0,y1)){
+        if (board[x0][x1]->team == 'b'){ // really I should implement facing here instead of hardcoding based on team. 
+            //TK
+        } else if (board[x0][x1]->team == 'w'){
+           //TK
+        }
+    }
+    return false;
+} 
+
+
 std::string Game::display_moves(int x, int y){
     if (withinbounds(x,y)){
         Piece* pc = getpc(x,y);
@@ -347,6 +363,9 @@ std::string Game::display_moves(int x, int y){
 
 bool Game::mov(int x0, int y0, int x1, int y1){
     if (withinbounds(x0,y0) && withinbounds(x1,y1) && board[x0][y0]){
+        if (board[x0][y0]->royal){
+            royals[board[x0][y0]->team] = std::make_pair(x1,y1);
+        }
         if (board[x1][y1]){
             board[x1][y1].reset();
         }
