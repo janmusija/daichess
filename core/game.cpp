@@ -417,7 +417,7 @@ std::string Game::display_moves(int x, int y){
         std::string s;
         if (pc){
             s = ((pc->display + " (") + pc->team) + "): ";
-            std::unordered_set<std::pair<int,int>,p_hash> mfdhsadfj = accessible_moves(x,y,pc->team);
+            std::unordered_set<std::pair<int,int>,p_hash> mfdhsadfj = legal_moves(x,y,pc->team);
             for (auto it = mfdhsadfj.begin(); it != mfdhsadfj.end(); ){
                 s+= algebraic_pos(*it);
                 it++;

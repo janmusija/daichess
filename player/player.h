@@ -9,9 +9,9 @@
 #include <iostream>
 #include "core/game.h"
 
-void main_menu(); // present player with interface on how to interact with game (e.g. play two-player/solo, play against AI, etc. Further options: rating?)
+void main_menu(Game & g); // present player with interface on how to interact with game (e.g. play two-player/solo, play against AI, etc. Further options: rating?)
 
-void menu(); // display menus, etc, using cin and short commands... compare menu payload of cotc 
+void player_menu(Game & g, char pteam); // display menus, etc, using cin and short commands... compare menu payload of cotc 
 
 inline void show_board(Game & g) {
     std::cout << g.display_board(0);

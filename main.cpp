@@ -33,6 +33,7 @@ int main(int argc, char *argv[]){
     std::cout << g.display_board(0); 
     std::cout << algebraic_pos(1,0) << " has access to " << algebraic_pos(1,1) << ": ";
     std::cout << g.accesses(1,0,1,1) << "\n";
-    std::cout << "white has moves: " << g.hasmoves('w'); 
+    std::cout << "white has moves: " << g.hasmoves('w') << "\n"; 
+    player_menu(g,'w');
     return 0;
 }
