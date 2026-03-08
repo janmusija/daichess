@@ -22,7 +22,18 @@ void player_menu(Game & g, char pteam){ // display menus, etc, using cin and sho
         std::string resp;
         std::cin >> resp;
         if (resp == "help") {
-            std::cout << "test";
+            #if debug_menu
+            std::cout << "DEBUG MENU ACTIVE!\n";
+            #endif
+            std::cout << "type 'help' for this menu.\n";
+            std::cout << "Type 'show' to show the board.\n";
+            std::cout << "Type 'moves' or 'mvs' followed by the notation for some position on the board to show the available moves for a given piece. (including one you do not control!)\n";
+            std::cout << "Type 'moveset' and a position to see all the moves a piece can make. 'leaps' refer to the simplest, most direct moves a piece can make; 'rides' are moves whereby a piece may repeatedly leap in the same direction across empty space. The convention is that the first coordinate is units forward and the second is units rightward.\n";
+            std::cout << "Type 'move' or 'mv' followed by the notations for two positions to move a piece from one position to another\n";
+            #if debug_menu
+            std::cout << "Type 'dpass' to pass your turn. (DEBUG MENU)\n";
+            std::cout << "Type 'dmv' to forcibly move a piece regardless of legality. (DEBUG MENU)\n";
+            #endif
         }
         else if (resp == "show") {
             std::cout << g.display_board(pteam == 'b');
@@ -38,22 +49,27 @@ void player_menu(Game & g, char pteam){ // display menus, etc, using cin and sho
             int y = pos_algebraic(src).second;
             if (g.haspiece(x,y)){
                 std::cout << "movement leaps:\n";
+                bool flag = 0;
                 for (auto it = g.board[x][y]->moves.mleaps.begin(); it!= g.board[x][y]->moves.mleaps.end(); it++){
-                    std::cout << "(" << it->first.first << ", " << it -> first.second << "), ";
+                    if (flag){std::cout << ", ";} else {flag = 1;}
+                    std::cout << "(" << it->first.first << ", " << it -> first.second << ")";
                 }
-                std::cout << "capture leaps:\n";
+                std::cout << "\ncapture leaps:\n"; flag = 0;
                 for (auto it = g.board[x][y]->moves.cleaps.begin(); it!= g.board[x][y]->moves.cleaps.end(); it++){
-                    std::cout << "(" << it->first.first << ", " << it -> first.second << "), ";
+                    if (flag){std::cout << ", ";} else {flag = 1;}
+                    std::cout << "(" << it->first.first << ", " << it -> first.second << ")";
                 }
-                std::cout << "movement rides\n";
+                std::cout << "\nmovement rides\n"; flag = 0;
                 for (auto it = g.board[x][y]->moves.mrides.begin(); it!= g.board[x][y]->moves.mrides.end(); it++){
+                    if (flag){std::cout << ", ";} else {flag = 1;}
                     std::cout << "(" << it->first.first << ", " << it -> first.second; 
-                    std::cout << "), ";
+                    std::cout << ")";
                 }
-                std::cout << "capture rides:\n";
+                std::cout << "\ncapture rides:\n"; flag = 0;
                 for (auto it = g.board[x][y]->moves.crides.begin(); it!= g.board[x][y]->moves.crides.end(); it++){
+                    if (flag){std::cout << ", ";} else {flag = 1;}
                     std::cout << "(" << it->first.first << ", " << it -> first.second;
-                    std::cout << "), ";
+                    std::cout << ")";
                 }
                 std::cout << "\n";
             }
@@ -66,6 +82,9 @@ void player_menu(Game & g, char pteam){ // display menus, etc, using cin and sho
             std::pair<int,int> xy0 = pos_algebraic(src);
             std::pair<int,int> xy1 = pos_algebraic(targ);
             g.mov(xy0.first,xy0.second,xy1.first,xy1.second);
+        }
+        else if (resp == "dpass") {
+            turn = 0;
         }
         #endif
 

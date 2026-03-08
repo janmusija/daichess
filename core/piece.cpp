@@ -96,9 +96,12 @@ Moveset::Moveset(std::string bnot){
             if (njflag){
                 aux = -aux-1;
             }
+            if (mov.first < mov.second){
+                std::swap(mov.first,mov.second);
+            }
             std::pair<int,int> move2 = mov;
             bool usem2 = 0;
-            if (mov.first != mov.second){
+            if (mov.first != mov.second && mov.second != 0){
                 move2.first = mov.second;
                 move2.second = mov.first;
                 usem2 = 1;

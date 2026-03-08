@@ -338,9 +338,9 @@ bool Game::accesses(int x0, int y0, int x1, int y1){// does not account for chec
     bool capt = 0;
     if (haspiece(x0,y0) && withinbounds(x1,y1)){
         if (board[x0][y0]->team == 'b'){ // really I should implement facing here instead of hardcoding based on team. 
-            f_sn = 1; r_sn = 1;
+            f_sn = -1; r_sn = -1;
         } else if (board[x0][y0]->team == 'w'){
-           f_sn = -1; r_sn = -1;
+           f_sn = 1; r_sn = 1;
         }
         if (board[x1][y1]){
             capt = 1;
