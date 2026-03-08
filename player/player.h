@@ -21,7 +21,7 @@ inline void get_moves(Game & g, int x, int y){
     std::cout << algebraic_pos(x,y) << ": " << g.display_moves(x,y) << "\n";
 }
 
-void player_move(Game & g, int x0, int y0, int x1, int y1, char pl);
+bool player_move(Game & g, int x0, int y0, int x1, int y1, char pl);
 
 inline void get_algebraic_history(const Game & g){
     std::cout << g.algebraic_history << "\n";
