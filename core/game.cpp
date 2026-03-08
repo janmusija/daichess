@@ -7,6 +7,8 @@
 #include "core/game.h"
 #include <string>
 
+#include <iostream>
+
 
 #define DISPLAYLEN 3
 
@@ -36,7 +38,6 @@ bool Game::placepiece(int x, int y, std::string betza, char tm){
     return placepiece(x,y,b,betza,tm);
 }
 
-#include <iostream>
 bool Game::placepiece(int x, int y, std::string disp, std::string betza, char tm){
     if (betza == ""){return 0;}
     else if ((int) board.size() <= x || x < 0 || (int) board[x].size() <= y || y < 0){return 0;}
@@ -133,7 +134,6 @@ std::string algebraic_pos(int x, int y){ // rank is x coordinate!!
 }
 std::string algebraic_pos(std::pair<int,int> p){ return algebraic_pos(p.first,p.second);}
 
-#include <iostream>
 std::pair<int,int> pos_algebraic(std::string s){ // rank is x coord
     int x = -1;
     int y = -1;
@@ -466,12 +466,12 @@ bool Game::suspend_move(int x0, int y0, int x1, int y1){ // suspend current piec
     if (haspiece(x0,y0) && withinbounds(x1,y1)){
         susp_src = std::make_unique<Piece>(board[x0][y0]->team, board[x0][y0]->royal);
         susp_dest.reset();
-        std::swap(board[x0][y0],susp_src);
-        std::swap(board[x1][y1],susp_dest);
-        std::swap(board[x0][y0],board[x1][y1]);
         if (board[x0][y0]->royal){
             royals[board[x0][y0]->team] = std::make_pair(x1,y1);
         }
+        std::swap(board[x0][y0],susp_src);
+        std::swap(board[x1][y1],susp_dest);
+        std::swap(board[x0][y0],board[x1][y1]);
         return 1;
     }
     return 0;
@@ -504,11 +504,20 @@ bool Game::legal(int x0, int y0, int x1, int y1, char pl){
     }
     if (a) {reset_suspension(x0,y0,x1,y1);}
     return b;
-    // TK --  ake sure this works
+    // TK --  make sure this works
 }
 
 bool Game::hasmoves(char pl){
-    // TK
+    for (int i = 0; i< (int) board.size(); i++){
+        for (int j = 0; j < (int) board[i].size(); j++){
+            if (board[i][j] && board[i][j]->team== pl){
+                if (!legal_moves(i,j,pl).empty()){
+                    return 1;
+                }
+            }
+        }
+    }
+    return 0;
 }
 
 std::unordered_set<std::pair<int,int>,p_hash> Game::legal_moves(int x, int y, char pl){

@@ -24,7 +24,10 @@ int main(int argc, char *argv[]){
     player_move(g,1,1,4,3,'w');
     std::cout << g.display_board(0);
     player_move(g,2,1,14,14,'w'); // illegal move
+    player_move(g,1,2,4,1,'w');
     std::cout << g.display_board(0); 
-    std::cout << g.accesses(1,0,1,1);
+    std::cout << algebraic_pos(1,0) << " has access to " << algebraic_pos(1,1) << ": ";
+    std::cout << g.accesses(1,0,1,1) << "\n";
+    std::cout << "white has moves: " << g.hasmoves('w'); 
     return 0;
 }

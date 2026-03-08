@@ -25,7 +25,6 @@ void Moveset::addmove(std::pair<int,int> m,bool isride, int mc, int aux){
 }
 
 Moveset::Moveset(){}
-
 Moveset::Moveset(std::string bnot){
     char firstdir = ' ';
     char secondir = ' ';
@@ -150,7 +149,7 @@ Moveset::Moveset(std::string bnot){
             // reset
             captures = 1; moves = 1; firstdir = ' '; secondir = ' ';
             i = nexti;
-            break;
+            continue;
         }
         
         
