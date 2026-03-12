@@ -19,8 +19,8 @@
 
 class Engine {
 public:
-    virtual bool underlying_move(Game & g, char pl) = 0; // make a legal move in a given position (technically you could make an engine that cheats, I guess). return 1 if successful; otherwise forfeit.
-    bool make_move(Game & g, char pl); // wrapped with miscellaneous details to ensure the move is processed properly
+    virtual std::pair<std::pair<int,int>,std::pair<int,int>> underlying_move(Game & g, char pl) = 0; // make a legal move in a given position (technically you could make an engine that cheats, I guess). return 1 if successful; otherwise forfeit.
+    bool e_move(Game & g, char pl); // wrapped with miscellaneous details to ensure the move is processed properly
 };
 
 class random_move : public Engine {
@@ -28,9 +28,14 @@ class random_move : public Engine {
     makes a random legal move.
     */
 public:
-    bool underlying_move(Game & g, char pl);
+    std::pair<std::pair<int,int>,std::pair<int,int>> underlying_move(Game & g, char pl);
 };
-std::pair<int,int> pick_random_member(const std::unordered_set<std::pair<int,int>,p_hash>& options, std::mt19937& rng);
+
+std::pair<int,int> pick_random_member(const std::unordered_set<std::pair<int,int>,p_hash>& options, std::mt19937& rng); 
+/*
+really i should template this.
+template <typename T, typename T_hash> T pick_random_member(const std::unordered_set<T,T_hash>& options, std::mt19937& rng) or something idk
+*/
 std::pair<std::pair<int,int>,std::pair<int,int>> pick_random_member(const std::unordered_set<std::pair<std::pair<int,int>,std::pair<int,int>>,q_hash>& options, std::mt19937& rng);
 
 class CCCP : public Engine { // per tom7
@@ -42,7 +47,7 @@ class CCCP : public Engine { // per tom7
     - push a piece
     */
 public:
-    bool underlying_move(Game & g, char pl);
+    std::pair<std::pair<int,int>,std::pair<int,int>> underlying_move(Game & g, char pl);
 };
 
 #endif /* engines.h */

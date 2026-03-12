@@ -10,6 +10,7 @@
 #include "core/piece.h"
 #include "core/game.h"
 #include "player/player.h"
+#include "engine/engines.h"
 
 int main(int argc, char *argv[]){
     Game g = main_menu();
@@ -19,12 +20,12 @@ int main(int argc, char *argv[]){
         std::string gar = std::to_string(g.turnctr);
         g.algebraic_history += gar + ". ";
     }
+    random_move ai;
     while (true){
         if (flagnew){std::cout << g.display_board(g.get_pl() == 'b');}
         if (g.ai_players.contains(g.get_pl())){
-            break;
             flagnew = 1;
-            //ai_move(g,g.get_pl());
+            ai.e_move(g,g.get_pl());
         } else {
             player_menu(g,g.get_pl());
             flagnew = 1;
