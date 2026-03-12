@@ -15,6 +15,10 @@ int main(int argc, char *argv[]){
     Game g = main_menu();
     bool flagnew = 1;
     std::cout << "type 'help' to show commands.";
+    {
+        std::string gar = std::to_string(g.turnctr);
+        g.algebraic_history += gar + ". ";
+    }
     while (true){
         if (flagnew){std::cout << g.display_board(g.get_pl() == 'b');}
         if (g.ai_players.contains(g.get_pl())){
@@ -24,6 +28,10 @@ int main(int argc, char *argv[]){
         } else {
             player_menu(g,g.get_pl());
             flagnew = 1;
+        }
+        if (g.fore_pl()){
+            std::string gar = std::to_string(g.turnctr);
+            g.algebraic_history += "  " + gar + ". ";
         }
     }
     return 0;

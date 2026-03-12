@@ -536,3 +536,10 @@ std::unordered_set<std::pair<int,int>,p_hash> Game::legal_moves(int x, int y, ch
     }
     return lm; 
 }
+
+void Game::append_to_alg(int x0, int y0, int x1, int y1){// call before mov();
+    append_to_alg(algebraic_pos(x0,y0),algebraic_pos(x1,y1));
+} 
+void Game::append_to_alg(std::string s0, std::string s1){
+    algebraic_history += (s0 + " -> " + s1 + ", ");
+}

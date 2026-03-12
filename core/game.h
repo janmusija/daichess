@@ -34,6 +34,8 @@ public:
     bool haspiece(int x, int y){
         return withinbounds(x,y)&&(board[x][y]);
     }
+    
+    int turnctr = 1;
 
     unsigned int width; // i.e. number of files a - p
     unsigned int height; // i.e. number of ranks 1-16
@@ -43,8 +45,8 @@ public:
     Game(int x,int y, std::vector<char> &&p);
     std::vector<char> players;
     int curr_pl;
-    void fore_pl() {++curr_pl; if (players.size() > 0 && curr_pl >= players.size()){curr_pl -= players.size();}} // adnvace turn
-    void back_pl() {--curr_pl; if (players.size() > 0 && curr_pl < 0){curr_pl += players.size();}}
+    bool fore_pl() {++curr_pl; if (players.size() > 0 && curr_pl >= players.size()){curr_pl -= players.size(); ++turnctr; return 1;} return 0;} // adnvace turn
+    bool back_pl() {--curr_pl; if (players.size() > 0 && curr_pl < 0){curr_pl += players.size(); --turnctr; return 1;} return 0;}
     char get_pl() {if (curr_pl >= 0 && curr_pl < players.size()) {return players[curr_pl];} else {return '0';}}
     std::unordered_set<char> ai_players;
 
@@ -91,6 +93,9 @@ public:
     bool mov(int x0, int y0, int x1, int y1);
     bool mov(std::pair<int,int>xy0, std::pair<int,int>xy1){return mov(xy0.first,xy0.second,xy1.first,xy1.second);};
     bool mov(std::string s0, std::string s1){return mov(pos_algebraic(s0),pos_algebraic(s1));};
+
+    void append_to_alg(int x0, int y0, int x1, int y1); // call before mov();
+    void append_to_alg(std::string s0, std::string s1);
 
     // game parameters
     bool move_into_check_legal = false;

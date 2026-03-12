@@ -13,7 +13,7 @@ Game main_menu(){ // present player with interface on how to interact with game 
     bool needresp = 1;
     std::string resp;
     while (needresp){
-    std::cout << "Would you like to play a new game ('new') or load a preexisting game ('load')?";
+    std::cout << "Would you like to play a new game ('new') or load a preexisting game ('load'): ";
     std::cin >> resp;    
         if (resp == "new" || resp == "load"){
             needresp = 0;
@@ -27,7 +27,7 @@ Game main_menu(){ // present player with interface on how to interact with game 
         needresp = 1;
         bool ai_opp = 0;
         while (needresp){
-            std::cout << "Play against another person opponent ('p', 'person', 'h', 'human') or against AI ('a', 'ai')?";
+            std::cout << "Play against another person opponent ('p', 'person', 'h', 'human') or against AI ('a', 'ai'): ";
             std::cin >> resp;    
             if (resp == "h" || resp == "human" || resp == "p" || resp == "person" || resp == "a" || resp == "ai"){
                 needresp = 0;
@@ -39,7 +39,7 @@ Game main_menu(){ // present player with interface on how to interact with game 
         if (ai_opp){
             needresp = 1;
             while (needresp){
-                std::cout << "choose your side ('w'/'b'/'r' for white/black/random)";
+                std::cout << "choose your side ('w'/'b'/'r' for white/black/random): ";
                 std::cin >> resp;    
                 if (resp == "b" || resp == "w" || resp == "r"){
                     needresp = 0;
@@ -84,6 +84,7 @@ void player_menu(Game & g, char pteam){ // display menus, etc, using cin and sho
             std::cout << "Type 'dpass' to pass your turn. (DEBUG MENU)\n";
             std::cout << "Type 'dmv' to forcibly move a piece regardless of legality. (DEBUG MENU)\n";
             #endif
+            std::cout << "Type 'history' to see the moves of this game so far.\n";
         }
         else if (resp == "show") {
             std::cout << g.display_board(pteam == 'b');
@@ -157,15 +158,17 @@ void player_menu(Game & g, char pteam){ // display menus, etc, using cin and sho
             std::pair<int,int> xy1 = pos_algebraic(targ);
             if (player_move(g,xy0.first,xy0.second,xy1.first,xy1.second,pteam)){
                 turn = 0;
-                std::cout << "show board? (y/n):";
+                std::cout << "show board? (y/n): ";
                 std::cin >> resp;
                 if (resp != "n"){
                     std::cout << g.display_board(pteam == 'b');
                 }
             }
         }
+        else if (resp == "history" || resp == "hist"){
+            std:: cout << "\n" << g.algebraic_history << "\n";
+        }
     }
-    g.fore_pl();
 }
 
 bool player_move(Game & g, int x0, int y0, int x1, int y1, char pl){
@@ -176,7 +179,8 @@ bool player_move(Game & g, int x0, int y0, int x1, int y1, char pl){
         if (g.board[x0][y0]){
             if (g.legal(x0, y0,x1, y1,pl)){
                 g.mov(x0,y0,x1,y1);
-                std::cout << "moved successfully.";
+                g.append_to_alg(x0,y0,x1,y1);
+                std::cout << "moved successfully.\n";
                 return 1;
             } else {
                 std::cout << "you cannot move this piece.\n";
