@@ -15,6 +15,7 @@
 Game::Game(int x, int y){
     board.clear();
     players = {'w','b'};
+    curr_pl = 0;
     width = y;
     height = x;
     for (int i = 0; i<x; i++){
@@ -25,6 +26,7 @@ Game::Game(int x, int y){
 Game::Game(int x, int y, std::vector<char>&& p){
     board.clear();
     players = p;
+    curr_pl = 0;
     width = y;
     height = x;
     for (int i = 0; i<x; i++){
@@ -43,6 +45,7 @@ bool Game::placepiece(int x, int y, std::string disp, std::string betza, char tm
     else if ((int) board.size() <= x || x < 0 || (int) board[x].size() <= y || y < 0){return 0;}
     else {
         board[x][y] = std::make_unique<Piece>(disp,betza,tm);
+        board[x][y]->initialize();
         if (betza == "K"){
             board[x][y]->royal = 1;
             royals[tm] = std::pair(x,y);
@@ -56,8 +59,8 @@ Game default_daichess(){
     std::string start[8][16] {
         // lowest y                                   //highest y
         {"WB","WDD","R","FAA","NB","HFD","WFDNA","Z","Z","WFDNA","HFD","NR","FAA","R","WDD","WB"}, // highest x
-        {"R","Z","FC","WF","FN","WC","B","Q","K","B","WC","FN","WF","FC","Z","R"},
-        {"FD","B","WA","N","FD","WD","F","N","N","F","WD","FD","N","WA","B","FD"},
+        {"R","Z","FC","WFiW2iF2","FN","WC","B","Q","K","B","WC","FN","WFiW2iF2","FC","Z","R"},
+        {"FDiF2iD2","B","WAiW2iA2","NiN2","FDiF2iD2","WDiW2iD2","FiF2","NiN2","NiN2","FiF2","WDiW2iD2","FDiF2iD2","NiN2","WAiW2iA2","B","FDiF2iD2"},
         {"P","P","P","P","P","P","P","P","P","P","P","P","P","P","P","P"},
         {"","","","","","","","","","","","","","","",""},
         {"","","","","","","","","","","","","","","",""},
@@ -435,6 +438,9 @@ bool Game::mov(int x0, int y0, int x1, int y1){
         }
         if (board[x1][y1]){
             board[x1][y1].reset();
+        }
+        if (board[x0][y0]->flag.contains("i")){ // unmoved pieces
+            board[x0][y0]->prune_init_moves();
         }
         std::swap(board[x0][y0],board[x1][y1]);
         return 1;

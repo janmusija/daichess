@@ -12,10 +12,19 @@
 #include "player/player.h"
 
 int main(int argc, char *argv[]){
-    Game g = default_daichess();
-    std::cout << g.display_board(0);
+    Game g = main_menu();
+    bool flagnew = 1;
+    std::cout << "type 'help' to show commands.";
     while (true){
-        player_menu(g,'w');
+        if (flagnew){std::cout << g.display_board(g.get_pl() == 'b');}
+        if (g.ai_players.contains(g.get_pl())){
+            break;
+            flagnew = 1;
+            //ai_move(g,g.get_pl());
+        } else {
+            player_menu(g,g.get_pl());
+            flagnew = 1;
+        }
     }
     return 0;
 }

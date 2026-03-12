@@ -34,6 +34,7 @@ public:
     bool haspiece(int x, int y){
         return withinbounds(x,y)&&(board[x][y]);
     }
+
     unsigned int width; // i.e. number of files a - p
     unsigned int height; // i.e. number of ranks 1-16
     std::string algebraic_history; //move history of the game
@@ -41,6 +42,12 @@ public:
     Game(int x,int y);
     Game(int x,int y, std::vector<char> &&p);
     std::vector<char> players;
+    int curr_pl;
+    void fore_pl() {++curr_pl; if (players.size() > 0 && curr_pl >= players.size()){curr_pl -= players.size();}} // adnvace turn
+    void back_pl() {--curr_pl; if (players.size() > 0 && curr_pl < 0){curr_pl += players.size();}}
+    char get_pl() {if (curr_pl >= 0 && curr_pl < players.size()) {return players[curr_pl];} else {return '0';}}
+    std::unordered_set<char> ai_players;
+
     bool placepiece(int x, int y, std::string betza, char team);
     bool placepiece(int x, int y, std::string disp, std::string betza, char team);
     std::unique_ptr<Piece>* get (std::string s) {return get(pos_algebraic(s));};

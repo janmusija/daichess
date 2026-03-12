@@ -6,11 +6,61 @@
 
 #include "player/player.h"
 #include <iostream>
-void main_menu(Game & g){ // present player with interface on how to interact with game (e.g. play two-player/solo, play against AI, etc. Further options: rating?)
-    std::cout << "Would you like to play a new game ('new') or load a preexisting game?";
+#include <random>
+#include <ctime>
+#include <string>
+Game main_menu(){ // present player with interface on how to interact with game (e.g. play two-player/solo, play against AI, etc. Further options: rating?)
+    bool needresp = 1;
     std::string resp;
-    std::cin >> resp;
-    // TK
+    while (needresp){
+    std::cout << "Would you like to play a new game ('new') or load a preexisting game ('load')?";
+    std::cin >> resp;    
+        if (resp == "new" || resp == "load"){
+            needresp = 0;
+        }
+    }
+    Game g = default_daichess(); // more general newgame generation TK
+    if (resp == "load"){
+        // TK
+    } else { // new game
+
+        needresp = 1;
+        bool ai_opp = 0;
+        while (needresp){
+            std::cout << "Play against another person opponent ('p', 'person', 'h', 'human') or against AI ('a', 'ai')?";
+            std::cin >> resp;    
+            if (resp == "h" || resp == "human" || resp == "p" || resp == "person" || resp == "a" || resp == "ai"){
+                needresp = 0;
+                if (resp == "a" || resp == "ai"){
+                    ai_opp = 1;
+                }
+            }
+        }
+        if (ai_opp){
+            needresp = 1;
+            while (needresp){
+                std::cout << "choose your side ('w'/'b'/'r' for white/black/random)";
+                std::cin >> resp;    
+                if (resp == "b" || resp == "w" || resp == "r"){
+                    needresp = 0;
+                }
+            }
+            if (resp != "b" && resp != "w"){
+                std::mt19937 mt(time(nullptr));
+                if (mt()%2 == 0) {
+                    g.ai_players.insert('w');
+                } else {
+                    g.ai_players.insert('b');
+                }
+            }
+            else if (resp == "b"){
+                g.ai_players.insert('w');
+            } else {
+                g.ai_players.insert('b');
+            }
+        }
+    }
+    return g;
 }
 
 #define debug_menu 1
@@ -62,14 +112,26 @@ void player_menu(Game & g, char pteam){ // display menus, etc, using cin and sho
                 std::cout << "\nmovement rides\n"; flag = 0;
                 for (auto it = g.board[x][y]->moves.mrides.begin(); it!= g.board[x][y]->moves.mrides.end(); it++){
                     if (flag){std::cout << ", ";} else {flag = 1;}
-                    std::cout << "(" << it->first.first << ", " << it -> first.second; 
-                    std::cout << ")";
+                    std::cout << "(" << it->first.first << ", " << it -> first.second << ")";
+                    int aux = it->second;
+                    if (aux < 0){
+                        aux = -1-aux;
+                    }
+                    if (aux > 0){
+                        std::cout << " length " << aux;
+                    }
                 }
                 std::cout << "\ncapture rides:\n"; flag = 0;
                 for (auto it = g.board[x][y]->moves.crides.begin(); it!= g.board[x][y]->moves.crides.end(); it++){
                     if (flag){std::cout << ", ";} else {flag = 1;}
-                    std::cout << "(" << it->first.first << ", " << it -> first.second;
-                    std::cout << ")";
+                    std::cout << "(" << it->first.first << ", " << it -> first.second << ")";
+                    int aux = it->second;
+                    if (aux < 0){
+                        aux = -1-aux;
+                    }
+                    if (aux > 0){
+                        std::cout << " length " << aux;
+                    }
                 }
                 std::cout << "\n";
             }
@@ -103,6 +165,7 @@ void player_menu(Game & g, char pteam){ // display menus, etc, using cin and sho
             }
         }
     }
+    g.fore_pl();
 }
 
 bool player_move(Game & g, int x0, int y0, int x1, int y1, char pl){

@@ -26,7 +26,7 @@ class Moveset {
     intpairmap cleaps; // int -> if -1, nonjumping
     intpairmap mrides; // int -> length. 0 if infinite. -(i+1) if nonjumping
     intpairmap crides; // int -> length. 0 if infinite. -(i+1) if nonjumping (i.e. -1 is infinite but nonjumping)
-    Moveset(std::string bnot);
+    Moveset(std::string bnot,bool initonly = 0);
     Moveset();
     void addmove(std::pair<int,int>,bool isride, int mc, int aux); // mc = 0 -> move and capture. mc = 1 -> move only. mc = -1 -> capture only
 };
@@ -35,7 +35,8 @@ class Moveset {
 class Piece {
     public:
     std::string display;
-    Moveset moves; 
+    Moveset moves;
+    Moveset init_only_moves; // these are deleted from Moves after the first move
     std::string betza; // for export
     bool royal;
     char team; // 'b' or 'w';
@@ -44,6 +45,7 @@ class Piece {
     Piece(std::string disp, std::string bnot, char tm); // display string, betza notation, team
     void initialize();
     Piece(char tm, bool royal); // dummy piece
+    void prune_init_moves(); //tk
 };
 
 #endif /* piece.h */

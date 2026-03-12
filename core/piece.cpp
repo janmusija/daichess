@@ -24,13 +24,15 @@ void Moveset::addmove(std::pair<int,int> m,bool isride, int mc, int aux){
     }
 }
 
+#include <iostream>
 Moveset::Moveset(){}
-Moveset::Moveset(std::string bnot){
+Moveset::Moveset(std::string bnot, bool initonly){
     char firstdir = ' ';
     char secondir = ' ';
     bool captures = 1;
     bool moves = 1;
     bool njflag = 0;
+    bool initflag = 0;
     int i = 0;
     while (i < (int) bnot.length()){
         if (bnot[i] == 'm' ) {
@@ -39,6 +41,8 @@ Moveset::Moveset(std::string bnot){
         } else if (bnot[i] == 'c'){
             captures = 1;
             moves = 0;
+        } else if (bnot[i] == 'i'){
+            initflag = 1;
         } else if (bnot[i] == 'n'){
             njflag = 1; // nonjump unimplemented
         }
@@ -50,7 +54,15 @@ Moveset::Moveset(std::string bnot){
             int aux = 0;
             if ((int) bnot.length() > i+1 && bnot[i+1] == bnot[i]){
                 ride = 1;
-                nexti++;
+                ++nexti;
+            } else if ((int) bnot.length() > i+1 && bnot[i+1] <= '9' && bnot[i+1] > '0'){
+                ride = 1;
+                std::string num = "";
+                while ((int) bnot.length() > nexti && bnot[nexti] <= '9' && bnot[nexti] >= '0'){
+                    num = num + bnot[nexti];
+                    ++nexti;
+                }
+                aux = std::atoi(num.c_str());
             }
             std::pair<int,int> mov;
             switch (bnot[i]){
@@ -91,6 +103,12 @@ Moveset::Moveset(std::string bnot){
                 break;
             }
 
+            if (initonly && !initflag){
+                captures = 1; moves = 1; firstdir = ' '; secondir = ' '; njflag = 0; initflag = 0;
+                i = nexti;
+                continue;
+            }
+
             // later: add support for limited ride length (= aux)
 
             if (njflag){
@@ -101,56 +119,87 @@ Moveset::Moveset(std::string bnot){
             }
             std::pair<int,int> move2 = mov;
             bool usem2 = 0;
-            if (mov.first != mov.second && mov.second != 0){
-                move2.first = mov.second;
-                move2.second = mov.first;
-                usem2 = 1;
-            }
-            /*
-             x
-          fl ^ fr
-             |
-         -y<-+->y     ... sorry
-             |
-          bl v br
-            -x
-            */
-            {
-                if (firstdir == ' ' || (firstdir == 'f' && (secondir == 'r' || secondir == ' '))){
-                    addmove(mov, ride, moves - captures, aux);
-                    if (usem2){
-                        addmove(move2, ride, moves-captures, aux);
+            if (mov.second == 0) {
+                /*
+                x
+             fl ^ fr
+                |
+            -y<-+->y     ... sorry
+                |
+             bl v br
+                -x
+                */
+                {
+                    if (firstdir == ' ' || (firstdir == 'f' && secondir == ' ')){
+                        addmove(mov, ride, moves - captures, aux);
+                    }
+                    mov.second = mov.first;
+                    mov.first = 0;
+                    if (firstdir == ' ' || (firstdir == 'r' && secondir == ' ')){
+                        addmove(mov, ride, moves - captures, aux);
+                    }
+                    mov.second = -mov.second;
+                    if (firstdir == ' ' || (firstdir == 'l' && secondir == ' ')){
+                        addmove(mov, ride, moves - captures, aux);
+                    }
+                    mov.first = mov.second;
+                    mov.second = 0;
+                    if (firstdir == ' ' || (firstdir == 'b' && secondir == ' ')){
+                        addmove(mov, ride, moves - captures, aux);
                     }
                 }
-                mov.second = -mov.second;
-                move2.second = -move2.second;
-                if (firstdir == ' ' || (firstdir == 'f' && (secondir == 'l' || secondir == ' '))){
-                    addmove(mov, ride, moves - captures, aux);
-                    if (usem2){
-                        addmove(move2, ride, moves-captures, aux);
-                    }
+            } else {
+                if (mov.first != mov.second){
+                    move2.first = mov.second;
+                    move2.second = mov.first;
+                    usem2 = 1;
                 }
-                mov.first = -mov.first;
-                move2.first = -move2.first;
-                if (firstdir == ' ' || (firstdir == 'b' && (secondir == 'l' || secondir == ' '))){
-                    addmove(mov, ride, moves - captures, aux);
-                    if (usem2){
-                        addmove(move2, ride, moves-captures, aux);
+                /*
+                x
+             fl ^ fr
+                |
+            -y<-+->y     ... sorry
+                |
+             bl v br
+                -x
+                */
+                {
+                    if (firstdir == ' ' || (firstdir == 'f' && (secondir == 'r' || secondir == ' '))){
+                        addmove(mov, ride, moves - captures, aux);
+                        if (usem2){
+                            addmove(move2, ride, moves-captures, aux);
+                        }
                     }
-                }
-                mov.second = -mov.second;
-                move2.second = -move2.second;
-                if (firstdir == ' ' || (firstdir == 'b' && (secondir == 'r' || secondir == ' '))){
-                    addmove(mov, ride, moves - captures, aux);
-                    if (usem2){
-                        addmove(move2, ride, moves-captures, aux);
+                    mov.second = -mov.second;
+                    move2.second = -move2.second;
+                    if (firstdir == ' ' || (firstdir == 'f' && (secondir == 'l' || secondir == ' '))){
+                        addmove(mov, ride, moves - captures, aux);
+                        if (usem2){
+                            addmove(move2, ride, moves-captures, aux);
+                        }
+                    }
+                    mov.first = -mov.first;
+                    move2.first = -move2.first;
+                    if (firstdir == ' ' || (firstdir == 'b' && (secondir == 'l' || secondir == ' '))){
+                        addmove(mov, ride, moves - captures, aux);
+                        if (usem2){
+                            addmove(move2, ride, moves-captures, aux);
+                        }
+                    }
+                    mov.second = -mov.second;
+                    move2.second = -move2.second;
+                    if (firstdir == ' ' || (firstdir == 'b' && (secondir == 'r' || secondir == ' '))){
+                        addmove(mov, ride, moves - captures, aux);
+                        if (usem2){
+                            addmove(move2, ride, moves-captures, aux);
+                        }
                     }
                 }
             }
 
 
             // reset
-            captures = 1; moves = 1; firstdir = ' '; secondir = ' ';
+            captures = 1; moves = 1; firstdir = ' '; secondir = ' '; njflag = 0; initflag = 0;
             i = nexti;
             continue;
         }
@@ -179,10 +228,11 @@ Piece::Piece(std::string disp, std::string bnot, char tm){
     if (bnot == "K"){ // king. not automatically royal.
         bnot = "WF";
     } else if (bnot == "P"){ // pawn
-        bnot = "fmWfcF";
+        bnot = "fmWfcFifmW4";
         flag.insert("p"); // pawns are janky and subject to many additional rules
     }
-    moves = Moveset(bnot);
+    moves = Moveset(bnot,0);
+    init_only_moves = Moveset(bnot,1);
 }
 
 Piece::Piece(char tm, bool r){
@@ -194,5 +244,28 @@ void Piece::initialize(){
     flag.insert("i");
     if (betza == "K" || betza == "R"){
         flag.insert("uncastled");
+    }
+}
+
+void Piece::prune_init_moves(){
+    for (auto it = init_only_moves.mleaps.begin(); it != init_only_moves.mleaps.end(); it++){
+        if (moves.mleaps.contains(it->first) && moves.mleaps[it->first] == it->second){
+            moves.mleaps.erase(it->first);
+        }
+    }
+    for (auto it = init_only_moves.cleaps.begin(); it != init_only_moves.cleaps.end(); it++){
+        if (moves.cleaps.contains(it->first) && moves.cleaps[it->first] == it->second){
+            moves.cleaps.erase(it->first);
+        }
+    }
+    for (auto it = init_only_moves.mrides.begin(); it != init_only_moves.mrides.end(); it++){
+        if (moves.mrides.contains(it->first) && moves.mrides[it->first] == it->second){
+            moves.mrides.erase(it->first);
+        }
+    }
+    for (auto it = init_only_moves.crides.begin(); it != init_only_moves.crides.end(); it++){
+        if (moves.crides.contains(it->first) && moves.crides[it->first] == it->second){
+            moves.crides.erase(it->first);
+        }
     }
 }
