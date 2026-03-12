@@ -6,10 +6,19 @@
 
 #include "engine/engines.h"
 
-random_move::e_move(Game & g, char pl){
-
+bool random_move::underlying_move(Game & g, char pl){
+    std::pg.legal_moves()
 }
 
-CCCP::e_move(Game & g, char pl){
+bool CCCP::underlying_move(Game & g, char pl){
     
+}
+
+std::pair<int,int> pick_random_member(const std::unordered_set<std::pair<int,int>,p_hash>& options, std::mt19937& rng){
+    std::unordered_set<std::pair<int,int>,p_hash>::const_iterator it = options.begin();
+    unsigned int gar = rng() % options.size();
+    for (int i = 0; i<gar; ++i){
+        ++it;
+    }
+    return *it;
 }
