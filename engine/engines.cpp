@@ -19,7 +19,6 @@ bool Engine::e_move(Game & g, char pl){
 
 std::pair<std::pair<int,int>,std::pair<int,int>> random_move::underlying_move(Game & g, char pl){
     std::unordered_set<std::pair<std::pair<int,int>,std::pair<int,int>>,q_hash> s = g.all_legal_moves(pl);
-    std::mt19937 rng(time(nullptr));
     return pick_random_member(s,rng);
 }
 

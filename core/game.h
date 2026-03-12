@@ -80,6 +80,7 @@ public:
 
     bool incheck(char pl);
     bool hasmoves(char pl);
+    bool checkmate(char pl) {return incheck(pl) && !hasmoves(pl);}
     std::unordered_set<std::pair<int,int>,p_hash> checkless_moves(int x, int y, char curr_pl);
     std::unordered_set<std::pair<int,int>,p_hash> checkless_moves(std::pair<int,int> xy, char curr_pl);
 

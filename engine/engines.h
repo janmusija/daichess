@@ -29,6 +29,13 @@ class random_move : public Engine {
     */
 public:
     std::pair<std::pair<int,int>,std::pair<int,int>> underlying_move(Game & g, char pl);
+    std::mt19937 rng;
+    random_move(int seed){
+        rng = std::mt19937(seed);
+    }
+    random_move(){
+        rng = std::mt19937(time(nullptr));
+    }
 };
 
 std::pair<int,int> pick_random_member(const std::unordered_set<std::pair<int,int>,p_hash>& options, std::mt19937& rng); 

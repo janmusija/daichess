@@ -21,11 +21,25 @@ int main(int argc, char *argv[]){
         g.algebraic_history += gar + ". ";
     }
     random_move ai;
-    while (true){
+    int i = 0;
+    while (true && i < 100){
         if (flagnew){std::cout << g.display_board(g.get_pl() == 'b');}
+        if (g.incheck(g.get_pl())){
+            std::cout << "check!";
+            if (!g.hasmoves(g.get_pl())){
+                std::cout << "checkmate!! ";
+                if (g.get_pl() == 'b'){
+                    std::cout << "white wins!\n";
+                } else {
+                    std::cout << "black wins!\n";
+                }
+                std::cout << g.algebraic_history;
+                break;
+            }
+        }
         if (g.ai_players.contains(g.get_pl())){
-            flagnew = 1;
             ai.e_move(g,g.get_pl());
+            flagnew = 1;
         } else {
             player_menu(g,g.get_pl());
             flagnew = 1;
