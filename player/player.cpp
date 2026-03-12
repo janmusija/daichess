@@ -27,11 +27,11 @@ Game main_menu(){ // present player with interface on how to interact with game 
         needresp = 1;
         bool ai_opp = 0;
         while (needresp){
-            std::cout << "Play against another person opponent ('p', 'person', 'h', 'human') or against AI ('a', 'ai'): ";
+            std::cout << "Play against another person opponent ('p', 'person', 'h', 'human') or against an engine ('a', 'ai', 'e', 'engine): ";
             std::cin >> resp;    
-            if (resp == "h" || resp == "human" || resp == "p" || resp == "person" || resp == "a" || resp == "ai"){
+            if (resp == "h" || resp == "human" || resp == "p" || resp == "person" || resp == "a" || resp == "ai" || resp == "e" || resp == "engine"){
                 needresp = 0;
-                if (resp == "a" || resp == "ai"){
+                if (resp == "a" || resp == "ai" || resp == "e" || resp == "engine"){
                     ai_opp = 1;
                 }
             }

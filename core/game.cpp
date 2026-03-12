@@ -543,3 +543,28 @@ void Game::append_to_alg(int x0, int y0, int x1, int y1){// call before mov();
 void Game::append_to_alg(std::string s0, std::string s1){
     algebraic_history += (s0 + " -> " + s1 + ", ");
 }
+
+Game::Game(Game & g){
+    width = g.width;
+    height = g.height;
+    turnctr = g.turnctr;
+    algebraic_history = g.algebraic_history;
+    royals = g.royals;
+    players = g.players;
+    curr_pl = g.curr_pl;
+    ai_players = g.ai_players;
+    move_into_check_legal = g.move_into_check_legal;
+
+    for (int i = 0; i<height; i++){
+        board.emplace_back(width);
+        for (int j = 0; j<width; j++){
+            if (g.board[i][j])
+            board[i][j] = std::make_unique<Piece>(*(g.board[i][j]));
+        }
+    }
+}
+
+Game Game::copy(){
+    Game h(*this);
+    return h;
+}

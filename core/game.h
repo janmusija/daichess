@@ -99,6 +99,11 @@ public:
 
     // game parameters
     bool move_into_check_legal = false;
+
+    // get a copy of the game
+
+    Game(Game & g);
+    Game copy();
 };
 
 Game default_daichess();
