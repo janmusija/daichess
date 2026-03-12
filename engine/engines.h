@@ -19,7 +19,7 @@
 
 class Engine {
 public:
-    virtual bool underlying_move(Game & g, char pl); // make a legal move in a given position (technically you could make an engine that cheats, I guess). return 1 if successful; otherwise forfeit.
+    virtual bool underlying_move(Game & g, char pl) = 0; // make a legal move in a given position (technically you could make an engine that cheats, I guess). return 1 if successful; otherwise forfeit.
     bool make_move(Game & g, char pl); // wrapped with miscellaneous details to ensure the move is processed properly
 };
 

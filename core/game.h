@@ -76,6 +76,7 @@ public:
 
     bool legal(int x0, int y0, int x1, int y1, char pl); 
     std::unordered_set<std::pair<int,int>,p_hash> legal_moves(int x, int y, char curr_pl);
+    std::unordered_set<std::pair<std::pair<int,int>,std::pair<int,int>>,q_hash> all_legal_moves(char curr_pl);
 
     bool incheck(char pl);
     bool hasmoves(char pl);

@@ -537,6 +537,23 @@ std::unordered_set<std::pair<int,int>,p_hash> Game::legal_moves(int x, int y, ch
     return lm; 
 }
 
+std::unordered_set<std::pair<std::pair<int,int>,std::pair<int,int>>,q_hash> Game::all_legal_moves(char pl){
+    std::unordered_set<std::pair<std::pair<int,int>,std::pair<int,int>>,q_hash> lm;
+    for (int x = 0; x < board.size(); x++){
+        for (int y = 0; y < board[x].size(); y++){
+            if (board[x][y] && board[x][y]->team == pl){
+                std::unordered_set<std::pair<int,int>,p_hash> am = accessible_moves(x,y,pl);
+                for (auto it = am.begin(); it != am.end(); it++){
+                    if (legal(x,y,it->first,it->second,pl)){
+                        lm.insert(std::make_pair(std::make_pair(x,y),*it));
+                    }
+                }
+            }
+        }
+    }
+    return lm; 
+}
+
 void Game::append_to_alg(int x0, int y0, int x1, int y1){// call before mov();
     append_to_alg(algebraic_pos(x0,y0),algebraic_pos(x1,y1));
 } 
