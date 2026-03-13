@@ -569,7 +569,6 @@ Game::Game(const Game & g){
     royals = g.royals;
     players = g.players;
     curr_pl = g.curr_pl;
-    ai_players = g.ai_players;
     move_into_check_legal = g.move_into_check_legal;
 
     for (int i = 0; i<(int)height; i++){

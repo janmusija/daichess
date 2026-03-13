@@ -9,7 +9,7 @@
 #include <random>
 #include <ctime>
 #include <string>
-Game main_menu(){ // present player with interface on how to interact with game (e.g. play two-player/solo, play against AI, etc. Further options: rating?)
+Game main_menu(std::unordered_map<char,int> & ai_id_map){ // present player with interface on how to interact with game (e.g. play two-player/solo, play against AI, etc. Further options: rating?)
     bool needresp = 1;
     std::string resp;
     while (needresp){
@@ -23,7 +23,6 @@ Game main_menu(){ // present player with interface on how to interact with game 
     if (resp == "load"){
         // TK
     } else { // new game
-
         needresp = 1;
         bool ai_opp = 0;
         bool both_ai = 0;
@@ -40,9 +39,7 @@ Game main_menu(){ // present player with interface on how to interact with game 
                 }
             }
         }
-        if (both_ai == 1){
-            g.ai_players.insert('w'); g.ai_players.insert('b');
-        }
+        char ai_pl = 'w';
         if (ai_opp){
             needresp = 1;
             while (needresp){
@@ -55,16 +52,35 @@ Game main_menu(){ // present player with interface on how to interact with game 
             if (resp != "b" && resp != "w"){
                 std::mt19937 mt(time(nullptr));
                 if (mt()%2 == 0) {
-                    g.ai_players.insert('w');
+                    ai_pl = 'w';
                 } else {
-                    g.ai_players.insert('b');
+                    ai_pl = 'b';
                 }
             }
             else if (resp == "b"){
-                g.ai_players.insert('w');
+                ai_pl = 'w';
             } else {
-                g.ai_players.insert('b');
+                ai_pl = 'b';
             }
+        }
+        if (both_ai || ai_opp){
+            std::cout << "ai ids are integers from 0 to 1 (inclusive).\n"; //document further later
+        }
+        if (both_ai){
+            std::cout << "Enter id for ai playing white: ";
+            int r = 0;
+            std::cin >> r;
+            ai_id_map['w'] = r;
+            std::cout << "Enter id for ai playing black: ";
+            r = 0;
+            std::cin >> r;
+            ai_id_map['b'] = r;
+        }
+        else if (ai_opp){
+            std::cout << "Enter id for ai opponent: ";
+            int r = 0;
+            std::cin >> r;
+            ai_id_map[ai_pl] = r;
         }
     }
     return g;

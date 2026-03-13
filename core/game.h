@@ -48,7 +48,6 @@ public:
     bool fore_pl() {++curr_pl; if (players.size() > 0 && curr_pl >= players.size()){curr_pl -= players.size(); ++turnctr; return 1;} return 0;} // adnvace turn
     bool back_pl() {--curr_pl; if (players.size() > 0 && curr_pl < 0){curr_pl += players.size(); --turnctr; return 1;} return 0;}
     char get_pl() {if (curr_pl >= 0 && curr_pl < players.size()) {return players[curr_pl];} else {return '0';}}
-    std::unordered_set<char> ai_players;
 
     bool placepiece(int x, int y, std::string betza, char team);
     bool placepiece(int x, int y, std::string disp, std::string betza, char team);

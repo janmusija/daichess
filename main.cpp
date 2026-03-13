@@ -14,7 +14,7 @@
 
 int main(int argc, char *argv[]){
     std::unordered_map<char,int> ai_id_map;
-    Game g = main_menu();
+    Game g = main_menu(ai_id_map);
     bool flagnew = 1;
     std::cout << "type 'help' to show commands.";
     {
@@ -25,12 +25,9 @@ int main(int argc, char *argv[]){
     // can be changed. more robust tournament support later.
     random_move ai_0;
     CCCP ai_1;
-    ai_id_map['w'] = 0; // todo: get rid of Game::ai_players and replace by adding ai_id_map as a reference passed to main_menu() which can be configured frely
-    ai_id_map['b'] = 1;
 
     int i = 0;
     while (true){
-        if (flagnew){std::cout << g.display_board(g.get_pl() == 'b');}
         if (g.incheck(g.get_pl())){
             if (!g.hasmoves(g.get_pl())){
                 std::cout << "checkmate!! ";
@@ -45,19 +42,19 @@ int main(int argc, char *argv[]){
                 std::cout << "check!";
             }
         }
-        if (g.ai_players.contains(g.get_pl())){
-            if (ai_id_map.contains(g.get_pl())){
-                switch (ai_id_map[g.get_pl()]){
-                    case 0:
-                    ai_0.e_move(g,g.get_pl()); break;
-                    case 1:
-                    ai_1.e_move(g,g.get_pl()); break;
-                }
-            } else {
-                ai_0.e_move(g,g.get_pl());
+        if (ai_id_map.contains(g.get_pl())){
+            switch (ai_id_map[g.get_pl()]){
+                case 0:
+                ai_0.e_move(g,g.get_pl()); break;
+                case 1:
+                ai_1.e_move(g,g.get_pl()); break;
+
+                default:
+                ai_0.e_move(g,g.get_pl()); break;
             }
             flagnew = 1;
         } else {
+            if (flagnew){std::cout << g.display_board(g.get_pl() == 'b');}
             player_menu(g,g.get_pl());
             flagnew = 1;
         }

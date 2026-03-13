@@ -9,7 +9,7 @@
 #include <iostream>
 #include "core/game.h"
 
-Game main_menu(); // present player with interface on how to interact with game (e.g. play two-player/solo, play against AI, etc. Further options: rating?)
+Game main_menu(std::unordered_map<char,int> & ai_id_map); // present player with interface on how to interact with game (e.g. play two-player/solo, play against AI, etc. Further options: rating?)
 
 void player_menu(Game & g, char pteam); // display menus, etc, using cin and short commands... compare menu payload of cotc 
 
