@@ -561,7 +561,7 @@ void Game::append_to_alg(std::string s0, std::string s1){
     algebraic_history += (s0 + " -> " + s1 + ", ");
 }
 
-Game::Game(Game & g){
+Game::Game(const Game & g){
     width = g.width;
     height = g.height;
     turnctr = g.turnctr;
@@ -572,9 +572,9 @@ Game::Game(Game & g){
     ai_players = g.ai_players;
     move_into_check_legal = g.move_into_check_legal;
 
-    for (int i = 0; i<height; i++){
+    for (int i = 0; i<(int)height; i++){
         board.emplace_back(width);
-        for (int j = 0; j<width; j++){
+        for (int j = 0; j<(int) width; j++){
             if (g.board[i][j])
             board[i][j] = std::make_unique<Piece>(*(g.board[i][j]));
         }

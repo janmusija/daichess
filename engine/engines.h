@@ -55,6 +55,7 @@ class CCCP : public Engine { // per tom7
     */
 public:
     std::pair<std::pair<int,int>,std::pair<int,int>> underlying_move(Game & g, char pl);
+    unsigned short tiebreak = 0; // to prevent getting stuck in a loop
 };
 
 #endif /* engines.h */

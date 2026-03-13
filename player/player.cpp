@@ -26,15 +26,22 @@ Game main_menu(){ // present player with interface on how to interact with game 
 
         needresp = 1;
         bool ai_opp = 0;
+        bool both_ai = 0;
         while (needresp){
-            std::cout << "Play against another person opponent ('p', 'person', 'h', 'human') or against an engine ('a', 'ai', 'e', 'engine): ";
+            std::cout << "Play against another person opponent ('p', 'person', 'h', 'human') or against an engine ('a', 'ai', 'e', 'engine)? or watch two bots ('2'): ";
             std::cin >> resp;    
-            if (resp == "h" || resp == "human" || resp == "p" || resp == "person" || resp == "a" || resp == "ai" || resp == "e" || resp == "engine"){
+            if (resp == "h" || resp == "human" || resp == "p" || resp == "person" || resp == "a" || resp == "ai" || resp == "e" || resp == "engine" || resp == "2"){
                 needresp = 0;
                 if (resp == "a" || resp == "ai" || resp == "e" || resp == "engine"){
                     ai_opp = 1;
                 }
+                if (resp == "2"){
+                    both_ai = 1;
+                }
             }
+        }
+        if (both_ai == 1){
+            g.ai_players.insert('w'); g.ai_players.insert('b');
         }
         if (ai_opp){
             needresp = 1;

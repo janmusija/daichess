@@ -94,6 +94,7 @@ public:
     // make a move (without regard for legality)
     bool mov(int x0, int y0, int x1, int y1);
     bool mov(std::pair<int,int>xy0, std::pair<int,int>xy1){return mov(xy0.first,xy0.second,xy1.first,xy1.second);};
+    bool mov(std::pair<std::pair<int,int>,std::pair<int,int>>xy0xy1){return mov(xy0xy1.first,xy0xy1.second);};
     bool mov(std::string s0, std::string s1){return mov(pos_algebraic(s0),pos_algebraic(s1));};
 
     void append_to_alg(int x0, int y0, int x1, int y1); // call before mov();
@@ -104,7 +105,7 @@ public:
 
     // get a copy of the game
 
-    Game(Game & g);
+    Game(const Game & g);
     Game copy();
 };
 
