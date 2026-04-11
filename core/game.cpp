@@ -58,7 +58,7 @@ Game default_daichess(){
     Game g = Game(16, 16);
     std::string start[8][16] {
         // lowest y                                   //highest y
-        {"WB","WDD","R","FAA","NB","HFD","WFDNA","Z","Z","WFDNA","HFD","NR","FAA","R","WDD","WB"}, // highest x
+        {"WB","WDD","R","FAA","NB","HFD","ZNG","WAH","WAH","ZNG","HFD","NR","FAA","R","WDD","WB"}, // highest x
         {"R","Z","FC","WFiW2iF2","FN","WC","B","Q","K","B","WC","FN","WFiW2iF2","FC","Z","R"},
         {"FDiF2iD2","B","WAiW2iA2","NiN2","FDiF2iD2","WDiW2iD2","FiF2","NiN2","NiN2","FiF2","WDiW2iD2","FDiF2iD2","NiN2","WAiW2iA2","B","FDiF2iD2"},
         {"P","P","P","P","P","P","P","P","P","P","P","P","P","P","P","P"},
@@ -155,29 +155,17 @@ Game default_daichess(){
             g.promo["HFD"] = std::make_pair(jon,1);
             g.promo["halfduck"] = std::make_pair(jon,0);
         }
-        /*
         {   // WAH
             std::pair<std::string,std::string> jon = std::make_pair("WAH","WAH");
-            g.promo["WAH"] = jon;
-            g.promo["waluigi"] = jon;
+            g.promo["WAH"] = std::make_pair(jon,1);
+            g.promo["waluigi"] = std::make_pair(jon,0); // (no affiliation)
         }
-        */
-        /*
         {   // ZNG
             std::pair<std::string,std::string> jon = std::make_pair("ZNG","ZNG");
-            g.promo["ZNG"] = jon;
-            g.promo["zing"] = jon;
-            g.promo["zing!!"] = jon;
+            g.promo["ZNG"] = std::make_pair(jon,1);
+            g.promo["zing"] = std::make_pair(jon,0);
+            g.promo["zing!!"] = std::make_pair(jon,0);
         }
-        */
-        /*  // not sure if I want to keep lions, especially as sth you can promote to
-        {   // lion
-            std::pair<std::string,std::string> jon = std::make_pair(" L ","WFDNA");
-            g.promo["WFDNA"] = jon;
-            g.promo["L"] = jon;
-            g.promo["lion"] = jon;
-        }
-        */
         {   // zebra
             std::pair<std::string,std::string> jon = std::make_pair(" Z ","Z");
             g.promo["Z"] = std::make_pair(jon,1);
