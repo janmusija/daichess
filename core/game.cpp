@@ -104,8 +104,149 @@ Game default_daichess(){
             g.placepiece(i,j,name,start[arrayx][j],(i<8)?'w':'b'); // code...
         }
     }
-    
-
+    {
+        {   // rook
+            std::pair<std::string,std::string> jon = std::make_pair(" R ","R");
+            g.promo["R"] = std::make_pair(jon,1);
+            g.promo["rook"] = std::make_pair(jon,0);
+        }
+        {   // double store
+            std::pair<std::string,std::string> jon = std::make_pair(" B ","B");
+            g.promo["B"] = std::make_pair(jon,1);
+            g.promo["bishop"] = std::make_pair(jon,0);
+        }
+        {   // knight
+            std::pair<std::string,std::string> jon = std::make_pair(" N ","N");
+            g.promo["N"] = std::make_pair(jon,1);
+            g.promo["knight"] =  std::make_pair(jon,0);
+        }
+        {   // queen
+            std::pair<std::string,std::string> jon = std::make_pair(" Q ","Q");
+            g.promo["Q"] = std::make_pair(jon,1);
+            g.promo["RB"] = std::make_pair(jon,0);
+            g.promo["queen"] = std::make_pair(jon,0);
+        }
+        {   // WB / dragon horse
+            std::pair<std::string,std::string> jon = std::make_pair("WB ","WB");
+            g.promo["WB"] = std::make_pair(jon,1);
+            g.promo["motherfucking dragon horse"] = std::make_pair(jon,0);
+            g.promo["dragon horse"] = std::make_pair(jon,0);
+        }
+        {   // wader
+            std::pair<std::string,std::string> jon = std::make_pair("WDD","WDD");
+            g.promo["WDD"] = std::make_pair(jon,1);
+            g.promo["wader"] = std::make_pair(jon,0);
+        }
+        {   // faalcon
+            std::pair<std::string,std::string> jon = std::make_pair("FAA","FAA");
+            g.promo["FAA"] = std::make_pair(jon,1);
+            g.promo["faalcon"] = std::make_pair(jon,0);
+        }
+        {   // archbishop
+            std::pair<std::string,std::string> jon = std::make_pair("NB ","NB");
+            g.promo["NB"] = std::make_pair(jon,1);
+            g.promo["archbishop"] = std::make_pair(jon,0);
+            g.promo["enby"] = std::make_pair(jon,0);
+            g.promo["princess"] = std::make_pair(jon,0);
+            g.promo["cardinal"] = std::make_pair(jon,0);
+        }
+        {   // halfduck
+            std::pair<std::string,std::string> jon = std::make_pair("HFD ","HFD");
+            g.promo["HFD"] = std::make_pair(jon,1);
+            g.promo["halfduck"] = std::make_pair(jon,0);
+        }
+        /*
+        {   // WAH
+            std::pair<std::string,std::string> jon = std::make_pair("WAH","WAH");
+            g.promo["WAH"] = jon;
+            g.promo["waluigi"] = jon;
+        }
+        */
+        /*
+        {   // ZNG
+            std::pair<std::string,std::string> jon = std::make_pair("ZNG","ZNG");
+            g.promo["ZNG"] = jon;
+            g.promo["zing"] = jon;
+            g.promo["zing!!"] = jon;
+        }
+        */
+        /*  // not sure if I want to keep lions, especially as sth you can promote to
+        {   // lion
+            std::pair<std::string,std::string> jon = std::make_pair(" L ","WFDNA");
+            g.promo["WFDNA"] = jon;
+            g.promo["L"] = jon;
+            g.promo["lion"] = jon;
+        }
+        */
+        {   // zebra
+            std::pair<std::string,std::string> jon = std::make_pair(" Z ","Z");
+            g.promo["Z"] = std::make_pair(jon,1);
+            g.promo["J"] = std::make_pair(jon,0);
+            g.promo["zebra"] = std::make_pair(jon,0);
+        }
+        {   // wizard
+            std::pair<std::string,std::string> jon = std::make_pair("FC ","FC");
+            g.promo["FC"] = std::make_pair(jon,1);
+            g.promo["FL"] = std::make_pair(jon,0);
+            g.promo["wizard"] = std::make_pair(jon,0);
+        }
+        {   // woody rook
+            std::pair<std::string,std::string> jon = std::make_pair("WD ","WD");
+            g.promo["WD"] = std::make_pair(jon,1);
+            g.promo["woody rook"] = std::make_pair(jon,0);
+        }
+        {   // man / commoner
+            std::pair<std::string,std::string> jon = std::make_pair("WF ","WF");
+            g.promo["WF"] = std::make_pair(jon,1);
+            g.promo["man"] = std::make_pair(jon,0);
+            g.promo["commoner"] = std::make_pair(jon,0);
+        }
+        {   // kirin
+            std::pair<std::string,std::string> jon = std::make_pair("FD ","FD");
+            g.promo["FD"] = std::make_pair(jon,1);
+            g.promo["kirin"] = std::make_pair(jon,0);
+        }
+        {   // WC / lightweight 
+            std::pair<std::string,std::string> jon = std::make_pair("WC ","WC");
+            g.promo["WC"] = std::make_pair(jon,1);
+            g.promo["LW"] = std::make_pair(jon,0);
+            g.promo["watercloset"] = std::make_pair(jon,0);
+            g.promo["toilet"] = std::make_pair(jon,0);
+            g.promo["lightweight"] = std::make_pair(jon,0);
+        }
+        {   // NR // chancellor // empress
+            std::pair<std::string,std::string> jon = std::make_pair("NR ","NR");
+            g.promo["NR"] = std::make_pair(jon,1);
+            g.promo["chancellor"] = std::make_pair(jon,0);
+            g.promo["empress"] = std::make_pair(jon,0);
+            g.promo["marshal"] = std::make_pair(jon,0);
+        }
+        {   // WA // phoenix // waffle
+            std::pair<std::string,std::string> jon = std::make_pair("WA ","WA");
+            g.promo["WA"] = std::make_pair(jon,1);
+            g.promo["waffle"] = std::make_pair(jon,0);
+            g.promo["phoenix"] = std::make_pair(jon,0);
+        }
+        {   // F // ferz
+            std::pair<std::string,std::string> jon = std::make_pair(" F ","F");
+            g.promo["F"] = std::make_pair(jon,1);
+            g.promo["ferz"] = std::make_pair(jon,0);
+            g.promo["pay respects"] = std::make_pair(jon,0);
+            g.promo["i dont need no chunky pieces"] = std::make_pair(jon,0);
+        }
+        /* piece code
+        {"WB","WDD","R","FAA","NB","HFD","WFDNA","Z","Z","WFDNA","HFD","NR","FAA","R","WDD","WB"},
+        {"R","Z","FC","WFiW2iF2","FN","WC","B","Q","K","B","WC","FN","WFiW2iF2","FC","Z","R"},
+        {"FDiF2iD2","B","WAiW2iA2","NiN2","FDiF2iD2","WDiW2iD2","FiF2","NiN2","NiN2","FiF2","WDiW2iD2","FDiF2iD2","NiN2","WAiW2iA2","B","FDiF2iD2"},
+        {"P","P","P","P","P","P","P","P","P","P","P","P","P","P","P","P"},
+        
+        names
+        {"WB ","WDD"," R ","FAA","NB ","HFD"," L "," Z "," Z "," L ","HFD","NR ","FAA"," R ","WDD","WB "},
+        {" R "," Z ","FC ","WF ","FN ","WC "," B "," Q "," K "," B ","WC ","FN ","WF ","FC "," Z "," R "},
+        {"FD "," B ","WA "," N ","FD ","WD "," F "," N "," N "," F ","WD ","FD "," N ","WA "," B ","FD "},
+        {" P "," P "," P "," P "," P "," P "," P "," P "," P "," P "," P "," P "," P "," P "," P "," P "},
+        */
+    }
     return g;
 }
 
@@ -263,6 +404,10 @@ std::unordered_set<std::pair<int,int>,p_hash> Game::accessible_moves(int x, int 
     if (board[x][y]->team != curr_pl){ // do you control that piece?
         return mvs;
     }
+    bool uncastledking = 0;
+    if (board[x][y]->royal && board[x][y]->flag.contains("uncastled")){
+        uncastledking = 1;
+    }
     int f_sn = 1;
     int r_sn = 1;
     if (curr_pl == 'w'){ // forward is +x. right is +y.
@@ -332,10 +477,26 @@ std::unordered_set<std::pair<int,int>,p_hash> Game::accessible_moves(int x, int 
             ++dist;
         }
     }
+    if (uncastledking){
+        for (int dir = 0; dir < 4; dir++){
+            int x1 = x; int y1 = y;
+            switch (dir) {
+                case 0: x1 = x+2; break;
+                case 1: x1 = x-2; break;
+                case 2: y1 = y+2; break;
+                case 3: y1 = y-2; break;
+            }
+            if (validcastle(x,y,x1,y1)){
+                mvs.insert(std::make_pair(x1,y1));
+            }
+        }
+    }
+
     return mvs;
 }
 
-bool Game::accesses(int x0, int y0, int x1, int y1){// does not account for check
+bool Game::accesses_castle(int x0, int y0, int x1, int y1, int& tx, int& ty){// does not account for check
+    tx = -1; ty = -1;
     int f_sn = 1;
     int r_sn = 1;
     bool capt = 0;
@@ -381,6 +542,10 @@ bool Game::accesses(int x0, int y0, int x1, int y1){// does not account for chec
                 }
             }
         } else {
+            // castling
+            if (validcastle(x0,y0,x1,y1,tx,ty)){
+                return true;
+            }
             // leaps
             if (board[x0][y0]->moves.mleaps.contains(std::pair(xdisp,ydisp))) {return true;}; // todo nonjumping
 
@@ -494,7 +659,8 @@ void Game::reset_suspension(int x0, int y0, int x1, int y1){ //undo that and des
 }
 
 bool Game::legal(int x0, int y0, int x1, int y1, char pl){
-    if (!accesses(x0,y0,x1,y1)){
+    int tx = -1; int ty = -1;
+    if (!accesses_castle(x0,y0,x1,y1,tx,ty)){
         return false;
     }
     if (board[x0][y0]->team != pl){
@@ -503,14 +669,42 @@ bool Game::legal(int x0, int y0, int x1, int y1, char pl){
     if (move_into_check_legal){
         return true;
     }
-    bool a = suspend_move(x0,y0,x1,y1);
-    bool b = true;
-    if (incheck(pl)){
-        b = false;
+    if (tx != -1){
+        Game g = copy();
+        int vx = x1 - x0; int vy = y1 - y0; vx = vx/2; vy = vy/2;
+        g.mov(x0,y0,x1,y1);
+        g.mov(tx,ty,x0+vx,y0+vy);
+        if (g.incheck(pl)){
+            return false;
+        }
+        return true;
+    } else {
+        bool a = suspend_move(x0,y0,x1,y1);
+        bool b = true;
+        if (incheck(pl)){
+            b = false;
+        }
+        if (a) {reset_suspension(x0,y0,x1,y1);}
+        return b;
     }
-    if (a) {reset_suspension(x0,y0,x1,y1);}
-    return b;
     // TK --  make sure this works
+}
+
+bool Game::validcastle(int x0, int y0, int x1, int y1, int& tx, int& ty, int& rooklen){
+    if (haspiece(x0,y0) && board[x0][y0]->royal && board[x0][y0]->flag.contains("uncastled")){
+        int vx = x1-x0; int vy = y1 - y0;
+        if (vx*vx + vy*vy == 4){ // this is a terrible hack to ensure that the move is a (2,0) move
+            int _x_ = x0; int _y_ = y0; int step = 0;
+            vx /= 2; vy /=2;
+            do {
+                _x_ += vx; _y_ += vy; ++step;
+                if (haspiece(_x_,_y_) && board[_x_][_y_]->flag.contains("uncastled") && (board[_x_][_y_]->betza == "R") && board[_x_][_y_]->team == board[x0][y0]->team && step > 2){
+                    tx = _x_; ty = _y_; rooklen = std::abs(x0+vx-_x_+y0+vy-_y_); return true;
+                } 
+            } while (withinbounds(_x_,_y_) && !board[_x_][_y_]);
+        }         
+    }
+    return false;  
 }
 
 bool Game::hasmoves(char pl){

@@ -27,7 +27,20 @@ int main(int argc, char *argv[]){
     CCCP ai_1;
 
     int i = 0;
+    char res = ' ';
     while (true){
+        ++i;
+        if (res != ' '){
+            if (res == 'w'){
+                std::cout << "white resigns.\n";
+            }
+            else if (res == 'b'){
+                std::cout << "black resigns.\n";
+            }
+            std::cout << g.display_board(0);
+            std::cout << g.algebraic_history;
+            break;
+        }
         if (g.incheck(g.get_pl())){
             if (!g.hasmoves(g.get_pl())){
                 std::cout << "checkmate!! ";
@@ -36,22 +49,36 @@ int main(int argc, char *argv[]){
                 } else {
                     std::cout << "black wins!\n";
                 }
+                std::cout << g.display_board(0);
                 std::cout << g.algebraic_history;
                 break;
             } else {
                 std::cout << "check!";
             }
+        } else {
+            if (!g.hasmoves(g.get_pl()) || i > 1000){
+                std::cout << "stalemate...\n";
+                std::cout << g.display_board(0);
+                std::cout << g.algebraic_history;
+                break;
+            }
         }
         if (ai_id_map.contains(g.get_pl())){
+            #define spam 1
+            #if spam
+            if (flagnew && g.get_pl() == 'w'){std::cout << g.display_board(g.get_pl() == 'b');}
+            #endif
+            bool played_successfully = 0;
+            res = g.get_pl();
             switch (ai_id_map[g.get_pl()]){
                 case 0:
-                ai_0.e_move(g,g.get_pl()); break;
+                played_successfully = ai_0.e_move(g,g.get_pl()); break;
                 case 1:
-                ai_1.e_move(g,g.get_pl()); break;
-
+                played_successfully = ai_1.e_move(g,g.get_pl()); break;
                 default:
-                ai_0.e_move(g,g.get_pl()); break;
+                played_successfully = ai_0.e_move(g,g.get_pl()); break;
             }
+            if (played_successfully) {res = ' ';}
             flagnew = 1;
         } else {
             if (flagnew){std::cout << g.display_board(g.get_pl() == 'b');}

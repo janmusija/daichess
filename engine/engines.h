@@ -20,7 +20,9 @@
 class Engine {
 public:
     virtual std::pair<std::pair<int,int>,std::pair<int,int>> underlying_move(Game & g, char pl) = 0; // make a legal move in a given position (technically you could make an engine that cheats, I guess). return 1 if successful; otherwise forfeit.
+    virtual std::string underlying_prom(Game & g, int x1, int y1, char pl) = 0; // promote
     bool e_move(Game & g, char pl); // wrapped with miscellaneous details to ensure the move is processed properly
+    std::string e_prom(Game & g, int x1, int y1, char pl); // promotion
 };
 
 class random_move : public Engine {
@@ -29,6 +31,7 @@ class random_move : public Engine {
     */
 public:
     std::pair<std::pair<int,int>,std::pair<int,int>> underlying_move(Game & g, char pl);
+    std::string underlying_prom(Game & g, int x1, int y1, char pl);
     std::mt19937 rng;
     random_move(int seed){
         rng = std::mt19937(seed);
@@ -55,7 +58,8 @@ class CCCP : public Engine { // per tom7
     */
 public:
     std::pair<std::pair<int,int>,std::pair<int,int>> underlying_move(Game & g, char pl);
-    unsigned short tiebreak = 0; // to prevent getting stuck in a loop
+    std::string underlying_prom(Game & g, int x1, int y1, char pl);
+    unsigned short tiebreak = 2; // to prevent getting stuck in a loop
 };
 
 #endif /* engines.h */

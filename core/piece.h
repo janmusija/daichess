@@ -45,7 +45,7 @@ class Piece {
     Piece(std::string disp, std::string bnot, char tm); // display string, betza notation, team
     void initialize();
     Piece(char tm, bool royal); // dummy piece
-    void prune_init_moves(); //tk
+    void prune_init_moves(); //get rid of init_only_moves
 };
 
 #endif /* piece.h */

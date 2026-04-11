@@ -21,6 +21,7 @@ std::pair<int,int> pos_algebraic(std::string s);
 class Game {
 public:
     std::vector<std::vector<std::unique_ptr<Piece>>> board;
+    std::unordered_map<std::string,std::pair<std::pair<std::string,std::string>,bool>> promo; // [name] -> ((display, betza),whether to show this option [for preventing duplication])
 
 private:
     std::unique_ptr<Piece> susp_src; //allows temporary change of board state
@@ -71,11 +72,16 @@ public:
     // gets the on-board moves for a piece. does not account for check
     std::unordered_set<std::pair<int,int>,p_hash> accessible_moves(int x, int y, char curr_pl);
     std::unordered_set<std::pair<int,int>,p_hash> accessible_moves(std::pair<int,int> xy, char curr_pl){return accessible_moves(xy.first,xy.second,curr_pl);};
-    bool accesses(int x0, int y0, int x1, int y1);// does not account for check
+    bool accesses_castle(int x0, int y0, int x1, int y1, int &tx, int &ty);// does not account for check
+    bool accesses(int x0, int y0, int x1, int y1) {int tx = -1; int ty = -1; return accesses_castle(x0,y0,x1,y1,tx,ty);}
 
     bool legal(int x0, int y0, int x1, int y1, char pl); 
     std::unordered_set<std::pair<int,int>,p_hash> legal_moves(int x, int y, char curr_pl);
     std::unordered_set<std::pair<std::pair<int,int>,std::pair<int,int>>,q_hash> all_legal_moves(char curr_pl);
+    bool validcastle(int x0, int y0, int x1, int y1, int& tx, int& ty, int& rooklen); // check if a move is specifically a castling move
+    bool validcastle(int x0, int y0, int x1, int y1, int& tx, int& ty) {int rl = 0; return validcastle(x0,y0,x1,y1,tx,ty,rl);}
+    bool validcastle(int x0, int y0, int x1, int y1) {int tx = -1; int ty = -1; int rl = 0; return validcastle(x0,y0,x1,y1,tx,ty,rl);}
+    
 
     bool incheck(char pl);
     bool hasmoves(char pl);

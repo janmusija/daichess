@@ -105,7 +105,8 @@ void player_menu(Game & g, char pteam){ // display menus, etc, using cin and sho
             std::cout << "Type 'move' or 'mv' followed by the notations for two positions to move a piece from one position to another\n";
             #if debug_menu
             std::cout << "Type 'dpass' to pass your turn. (DEBUG MENU)\n";
-            std::cout << "Type 'dmv' to forcibly move a piece regardless of legality. (DEBUG MENU)\n";
+            std::cout << "Type 'dmv' to forcibly move a piece regardless of legality. This does not pass your turn. (DEBUG MENU)\n";
+            std::cout << "Type 'dset' to change or set a piece. Enter position, Betza notation, associated player (e.g. w), and then a display string. (DEBUG MENU)\n";
             #endif
             std::cout << "Type 'history' to see the moves of this game so far.\n";
         }
@@ -168,6 +169,15 @@ void player_menu(Game & g, char pteam){ // display menus, etc, using cin and sho
             std::pair<int,int> xy0 = pos_algebraic(src);
             std::pair<int,int> xy1 = pos_algebraic(targ);
             g.mov(xy0.first,xy0.second,xy1.first,xy1.second);
+        }/*
+        else if (resp == "ddel" || resp == "delete"){
+            std::string targ;
+        }*/
+        else if (resp == "dset" || resp == "ds"){
+            std::string targ; std::string betza; std::string team;
+            std::cin >> targ; std::cin >> betza; std::cin >> team;
+            std::pair<int,int> xy0 = pos_algebraic(targ);
+            g.placepiece(xy0.first, xy0.second, betza, team[0]);
         }
         else if (resp == "dpass") {
             turn = 0;
@@ -194,15 +204,89 @@ void player_menu(Game & g, char pteam){ // display menus, etc, using cin and sho
     }
 }
 
+std::string player_promote(Game & g, int x1, int y1, char pteam){
+    std::cout << "You are in the promotion menu for the piece at " << algebraic_pos(x1,y1) << ". Type 'help' for help.\n";
+    bool needs_prom = 1;
+    while (needs_prom){
+        std::string resp;
+        std::cin >> resp;
+        if (resp == "help") {
+            #if debug_menu
+            std::cout << "DEBUG MENU ACTIVE!\n";
+            #endif
+            std::cout << "type 'help' for this menu.\n";
+            std::cout << "Type 'show' to show the board.\n";
+            std::cout << "Type 'opt' to show the promotion options (betza notation).\n";
+            std::cout << "Type 'p' to promote the piece at" << algebraic_pos(x1,y1) << "\n";
+            //std::cout << "Type 'moveset' and a position to see all the moves a piece can make. 'leaps' refer to the simplest, most direct moves a piece can make; 'rides' are moves whereby a piece may repeatedly leap in the same direction across empty space. The convention is that the first coordinate is units forward and the second is units rightward.\n";
+            #if debug_menu
+            std::cout << "Type 'dpass' to not promote. (DEBUG MENU)\n";
+            #endif
+            std::cout << "Type 'history' to see the moves of this game so far.\n";
+        } else if (resp == "show"){
+            std::cout << g.display_board(pteam == 'b');
+        } else if (resp == "opt"){
+            bool firs = 1;
+            for (auto it = g.promo.begin(); it!= g.promo.end(); it++){
+                if (it->second.second){
+                    if (firs) {firs =0;} else {std::cout << ", ";}
+                    std::cout << it->first;
+                }
+            }
+            std::cout << "\n";
+        } else if (resp == "p"){
+            std::string adhsdjf;
+            std::cin >> adhsdjf;
+            if (g.promo.contains(adhsdjf)){
+                needs_prom = 0;
+                if (g.haspiece(x1,y1)){
+                    char tm = g.board[x1][y1]->team;
+                    g.placepiece(x1, y1, g.promo[adhsdjf].first.first, g.promo[adhsdjf].first.second, tm);
+                    return g.promo[adhsdjf].first.second;
+                }
+            } else {
+                std::cout << "not a valid promotion!\n";
+            }
+        }
+        #if debug_menu
+        else if (resp == "dpass"){
+            needs_prom = 0;
+        }
+        #endif
+        else if (resp == "history"){
+            std:: cout << "\n" << g.algebraic_history << "\n";
+        }
+    }
+    return "";
+}
+
 bool player_move(Game & g, int x0, int y0, int x1, int y1, char pl){
     if (!g.withinbounds(x0,y0) || !g.withinbounds(x1,y1)){
         std::cout << "out of bounds!\n";
         return 0;
     } else {
         if (g.board[x0][y0]){
-            if (g.legal(x0, y0,x1, y1,pl)){
-                g.mov(x0,y0,x1,y1);
-                g.append_to_alg(x0,y0,x1,y1);
+            if (g.legal(x0,y0,x1,y1,pl)){
+                int rooklen = -1; int tx = -1; int ty = -1; 
+                if (g.validcastle(x0,y0,x1,y1,tx,ty,rooklen)){
+                    std::string OO;
+                    for (int i = 0; i< rooklen; i++){
+                        if (i!= 0){OO += "-O";}
+                        else {OO += "O";}
+                    }
+                    int vx = x1 - x0; int vy = y1 - y0; vx /= 2; vy /= 2;
+                    g.mov(x0,y0,x1,y1);
+                    g.mov(tx,ty,x0+vx,y0+vy);
+                    g.append_to_alg(algebraic_pos(x0,y0),algebraic_pos(x1,y1) + "w/ " + OO);
+                } else {
+                    g.mov(x0,y0,x1,y1);
+                    if (g.board[x1][y1]->flag.contains("p") && ((pl=='b' && x1 == 0) || (pl == 'w' && x1 == g.board.size()-1))){ // promoters
+                        std::string gar = player_promote(g,x1,y1, pl);
+                        g.append_to_alg(algebraic_pos(x0,y0),algebraic_pos(x1,y1) + " =" + gar);
+                    } else{
+                        g.append_to_alg(x0,y0,x1,y1);
+                    }
+                }
                 std::cout << "moved successfully.\n";
                 return 1;
             } else {
