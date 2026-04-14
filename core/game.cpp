@@ -769,6 +769,44 @@ Game::Game(const Game & g){
     }
 }
 
+void Game::ahr_update(std::string piece_og, std::string orig_pos, std::string new_pos, bool capt, bool cast, std::string cast_str, std::string prom_str){
+    std::string s;
+    if (curr_pl == 0){
+        s+= std::to_string(turnctr) + ". ";
+    }
+    if (cast)
+    {
+        s += cast_str + new_pos;
+    } else {
+        s += prune_spaces(piece_og,' ');
+        for (int i = 0; i< s.length(); i++){
+            if (s[i] >= 'a' && s[i] <= 'z'){
+                s[i] += ('A' - 'a');
+            }
+        }
+        if (capt){
+            s += "x";
+        }
+        s += orig_pos;
+        s += new_pos;
+        std::string p_s = prune_spaces(prom_str,' ');
+        if (prom_str.length() >0){
+            for (int i = 0; i< p_s.length(); i++){
+            if (p_s[i] >= 'a' && p_s[i] <= 'z'){
+                p_s[i] += ('A' - 'a');
+            }
+        }
+            s+= "=";
+            s+= p_s;
+        }
+    }
+    if (curr_pl + 1 >= players.size()){
+        s+= "";
+    } 
+    s+=" ";
+    algebraic_history_real += s;
+}
+
 Game Game::copy(){
     Game h(*this);
     return h;

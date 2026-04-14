@@ -110,6 +110,9 @@ void player_menu(Game & g, char pteam){ // display menus, etc, using cin and sho
             std::cout << "Type 'deface' to change the direction a piece is facing. (DEBUG MENU)\n";
             #endif
             std::cout << "Type 'history' to see the moves of this game so far.\n";
+            #if debug_menu
+            std::cout << "Type 'dhist' to see the history in a different format.\n";
+            #endif
         }
         else if (resp == "show") {
             std::cout << g.display_board(pteam == 'b');
@@ -209,6 +212,9 @@ void player_menu(Game & g, char pteam){ // display menus, etc, using cin and sho
             }
         }
         else if (resp == "history" || resp == "hist"){
+            std:: cout << "\n" << g.algebraic_history_real << "\n";
+        }
+        else if (resp == "debug history" || resp == "dhist"){
             std:: cout << "\n" << g.algebraic_history << "\n";
         }
     }
@@ -264,7 +270,7 @@ std::string player_promote(Game & g, int x1, int y1, char pteam, char pf){
         }
         #endif
         else if (resp == "history"){
-            std:: cout << "\n" << g.algebraic_history << "\n";
+            std:: cout << "\n" << g.algebraic_history_real << "\n";
         }
     }
     return "";
@@ -277,9 +283,15 @@ bool player_move(Game & g, int x0, int y0, int x1, int y1, char pl){
     } else {
         if (g.board[x0][y0]){
             if (g.legal(x0,y0,x1,y1,pl)){
-                int rooklen = -1; int tx = -1; int ty = -1; 
-                if (g.validcastle(x0,y0,x1,y1,tx,ty,rooklen)){
-                    std::string OO;
+                int rooklen = -1; int tx = -1; int ty = -1;
+                std::string ahr_1 = g.board[x0][y0]->display;
+                std::string ahr_2 = algebraic_pos(x0,y0);
+                std::string ahr_3 = algebraic_pos(x1,y1);
+                bool ahr_4 = (bool)g.board[x1][y1];
+                bool cast = g.validcastle(x0,y0,x1,y1,tx,ty,rooklen);
+                std::string OO;
+                std::string prom_str;
+                if (cast){
                     for (int i = 0; i< rooklen; i++){
                         if (i!= 0){OO += "-O";}
                         else {OO += "O";}
@@ -287,17 +299,19 @@ bool player_move(Game & g, int x0, int y0, int x1, int y1, char pl){
                     int vx = x1 - x0; int vy = y1 - y0; vx /= 2; vy /= 2;
                     g.mov(x0,y0,x1,y1);
                     g.mov(tx,ty,x0+vx,y0+vy);
-                    g.append_to_alg(algebraic_pos(x0,y0),algebraic_pos(x1,y1) + "w/ " + OO);
+                    g.append_to_alg(ahr_2,ahr_3 + "w/ " + OO);
                 } else {
                     g.mov(x0,y0,x1,y1);
                     if (g.board[x1][y1]->flag.contains("p") && ((pl=='b' && x1 == 0) || (pl == 'w' && x1 == g.board.size()-1))){ // promoters
                         std::string gar = player_promote(g,x1,y1, pl, (pl=='b')?'b':'f'); // not really a robust way to check facing
                         g.append_to_alg(algebraic_pos(x0,y0),algebraic_pos(x1,y1) + " =" + gar);
+                        prom_str = g.board[x1][y1]->display;
                     } else{
                         g.append_to_alg(x0,y0,x1,y1);
                     }
                 }
                 std::cout << "moved successfully.\n";
+                g.ahr_update(ahr_1,ahr_2,ahr_3,ahr_4,cast,OO,prom_str);
                 return 1;
             } else {
                 std::cout << "you cannot move this piece.\n";

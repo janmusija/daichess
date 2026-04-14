@@ -68,4 +68,6 @@ class Piece {
     bool facing_AtR(const int x, const int y, int & _x_, int & _y_); // absolute to relative
 };
 
+extern std::string prune_spaces(std::string s, char sep);
+
 #endif /* piece.h */

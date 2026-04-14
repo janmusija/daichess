@@ -50,7 +50,7 @@ int main(int argc, char *argv[]){
                     std::cout << "black wins!\n";
                 }
                 std::cout << g.display_board(0);
-                std::cout << g.algebraic_history;
+                std::cout << g.algebraic_history_real;
                 break;
             } else {
                 std::cout << "check!\n";
@@ -59,7 +59,7 @@ int main(int argc, char *argv[]){
             if (!g.hasmoves(g.get_pl()) || i > 1000){
                 std::cout << "stalemate...\n";
                 std::cout << g.display_board(0);
-                std::cout << g.algebraic_history;
+                std::cout << g.algebraic_history_real;
                 break;
             }
         }
@@ -90,6 +90,6 @@ int main(int argc, char *argv[]){
             g.algebraic_history += "  " + gar + ". ";
         }
     }
-    std::cout << "\n" << g.algebraic_history << "\n";
+    std::cout << "\n" << g.algebraic_history_real << "\n";
     return 0;
 }

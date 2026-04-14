@@ -11,8 +11,14 @@ bool Engine::e_move(Game & g, char pl){
     int x0 = m.first.first; int y0 = m.first.second; int x1 = m.second.first; int y1 = m.second.second;
     if (g.haspiece(m.first.first,m.first.second) && g.withinbounds(m.second.first,m.second.second)){
         int rooklen = -1; int tx = -1; int ty = -1;
-        if (g.validcastle(x0,y0,x1,y1,tx,ty,rooklen)){
-            std::string OO;
+        std::string ahr_1 = g.board[x0][y0]->display;
+        std::string ahr_2 = algebraic_pos(x0,y0);
+        std::string ahr_3 = algebraic_pos(x1,y1);
+        bool ahr_4 = (bool)g.board[x1][y1];
+        bool cast = g.validcastle(x0,y0,x1,y1,tx,ty,rooklen);
+        std::string OO;
+        std::string prom_str;
+        if (cast){
             for (int i = 0; i< rooklen; i++){
                 if (i!= 0){OO += "-O";}
                 else {OO += "O";}
@@ -26,10 +32,12 @@ bool Engine::e_move(Game & g, char pl){
             if (g.board[x1][y1]->flag.contains("p") && ((pl=='b' && x1 == 0) || (pl == 'w' && x1 == g.board.size()-1))){ // promoters
                 std::string gar = e_prom(g,x1,y1, pl);
                 g.append_to_alg(algebraic_pos(x0,y0),algebraic_pos(x1,y1) + " =" + gar);
+                prom_str = g.board[x1][y1]->display;
             } else{
                 g.append_to_alg(x0,y0,x1,y1);
             }
         }
+        g.ahr_update(ahr_1,ahr_2,ahr_3,ahr_4,cast,OO,prom_str);
         return true;
     } else {
         return false;

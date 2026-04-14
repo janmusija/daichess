@@ -41,7 +41,8 @@ public:
     unsigned int width; // i.e. number of files a - p
     unsigned int height; // i.e. number of ranks 1-16
     std::string algebraic_history; //move history of the game
-    std::string algebraic_history_real; //actual move history of the game with like real notation
+    std::string algebraic_history_real; //actual move history of the game with, like, real* notation
+    void ahr_update(std::string piece_og, std::string orig_pos, std::string new_pos, bool capt, bool cast, std::string cast_str, std::string prom_str);
     std::unordered_map<char,std::pair<int,int>> royals; // positions of royal pieces
     Game(int x,int y);
     Game(int x,int y, std::vector<char> &&p);
