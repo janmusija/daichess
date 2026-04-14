@@ -39,7 +39,7 @@ bool Engine::e_move(Game & g, char pl){
 std::string Engine::e_prom(Game & g, int x1, int y1, char pl){
     std::string adgadshf = underlying_prom(g,x1,y1,pl);
     char tm = g.board[x1][y1]->team;
-    g.placepiece(x1, y1, g.promo[adgadshf].first.first, g.promo[adgadshf].first.second, tm);
+    g.placepiece(x1, y1, g.promo[adgadshf].first.first, g.promo[adgadshf].first.second, tm, fc);
     return g.promo[adgadshf].first.second;
 }
 

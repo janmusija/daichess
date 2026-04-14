@@ -34,17 +34,17 @@ Game::Game(int x, int y, std::vector<char>&& p){
     }
 }
 
-bool Game::placepiece(int x, int y, std::string betza, char tm){
+bool Game::placepiece(int x, int y, std::string betza, char tm, char fc){
     std::string b = betza;
     b.resize(DISPLAYLEN,' ');
-    return placepiece(x,y,b,betza,tm);
+    return placepiece(x,y,b,betza,tm, fc);
 }
 
-bool Game::placepiece(int x, int y, std::string disp, std::string betza, char tm){
+bool Game::placepiece(int x, int y, std::string disp, std::string betza, char tm, char fc){
     if (betza == ""){return 0;}
     else if ((int) board.size() <= x || x < 0 || (int) board[x].size() <= y || y < 0){return 0;}
     else {
-        board[x][y] = std::make_unique<Piece>(disp,betza,tm);
+        board[x][y] = std::make_unique<Piece>(disp,betza,tm,fc);
         board[x][y]->initialize();
         if (betza == "K"){
             board[x][y]->royal = 1;
@@ -101,7 +101,7 @@ Game default_daichess(){
                     }
                 }
             }
-            g.placepiece(i,j,name,start[arrayx][j],(i<8)?'w':'b'); // code...
+            g.placepiece(i,j,name,start[arrayx][j],(i<8)?'w':'b',(i<8)?'f':'b'); // code...
         }
     }
     {
@@ -396,13 +396,6 @@ std::unordered_set<std::pair<int,int>,p_hash> Game::accessible_moves(int x, int 
     if (board[x][y]->royal && board[x][y]->flag.contains("uncastled")){
         uncastledking = 1;
     }
-    int f_sn = 1;
-    int r_sn = 1;
-    if (curr_pl == 'w'){ // forward is +x. right is +y.
-        f_sn = 1; r_sn = 1;
-    } else if (curr_pl == 'b'){ // forward is -x. right is -y.
-        f_sn = -1; r_sn = -1;
-    }
 
     Moveset* m_set = &(board[x][y]->moves);
 
@@ -410,8 +403,11 @@ std::unordered_set<std::pair<int,int>,p_hash> Game::accessible_moves(int x, int 
     // to do: inmplement non-jumping properly
     for (auto it = m_set->mleaps.begin(); it!=m_set->mleaps.end(); it++){
         aux = it->second; if (aux < 0){njflag = 1; aux = -aux-1;}
-        int x1 = ((it->first.first)*f_sn)+x; // it->first is the move. it->second is the aux value
-        int y1 = ((it->first.second)*r_sn)+y;
+        int iff_a;
+        int ifs_a;
+        board[x][y]->facing_RtA(it->first.first,it->first.second,iff_a,ifs_a);
+        int x1 = iff_a+x; // it->first is the move. it->second is the aux value
+        int y1 = ifs_a+y;
         if (x1 >= 0 && x1 < (int) board.size() && y1 >= 0 && y1 < (int) board[x1].size()){
             if (!(board[x1][y1])){
                 mvs.insert(std::make_pair(x1,y1));
@@ -420,8 +416,11 @@ std::unordered_set<std::pair<int,int>,p_hash> Game::accessible_moves(int x, int 
     }
     for (auto it = m_set->cleaps.begin(); it!=m_set->cleaps.end(); it++){
         aux = it->second; if (aux < 0){njflag = 1; aux = -aux-1;}
-        int x1 = ((it->first.first)*f_sn)+x;
-        int y1 = ((it->first.second)*r_sn)+y;
+        int iff_a;
+        int ifs_a;
+        board[x][y]->facing_RtA(it->first.first,it->first.second,iff_a,ifs_a);
+        int x1 = iff_a+x;
+        int y1 = ifs_a+y;
         if (x1 >= 0 && x1 < (int) board.size() && y1 >= 0 && y1 < (int) board[x1].size()){
             if ((board[x1][y1])&&(board[x1][y1]->team != curr_pl)){
                 mvs.insert(std::make_pair(x1,y1));
@@ -430,12 +429,15 @@ std::unordered_set<std::pair<int,int>,p_hash> Game::accessible_moves(int x, int 
     }
     for (auto it = m_set->mrides.begin(); it!=m_set->mrides.end(); it++){
         aux = it->second; if (aux < 0){njflag = 1; aux = -aux-1;}
+        int iff_a;
+        int ifs_a;
+        board[x][y]->facing_RtA(it->first.first,it->first.second,iff_a,ifs_a);
         int x1 = x;
         int y1 = y;
         int dist = 0;
         while (aux == 0 || dist < aux){
-            x1 += ((it->first.first)*f_sn);
-            y1 += ((it->first.second)*r_sn);
+            x1 += iff_a;
+            y1 += ifs_a;
             if (x1 >= 0 && x1 < (int) board.size() && y1 >= 0 && y1 < (int) board[x1].size()){
                 if (!(board[x1][y1])){
                     mvs.insert(std::make_pair(x1,y1));
@@ -446,12 +448,15 @@ std::unordered_set<std::pair<int,int>,p_hash> Game::accessible_moves(int x, int 
     }
     for (auto it = m_set->crides.begin(); it!=m_set->crides.end(); it++){
         aux = it->second; if (aux < 0){njflag = 1; aux = -aux-1;}
+        int iff_a;
+        int ifs_a;
+        board[x][y]->facing_RtA(it->first.first,it->first.second,iff_a,ifs_a);
         int x1 = x;
         int y1 = y;
         int dist = 0;
         while (aux == 0 || dist < aux){
-            x1 += ((it->first.first)*f_sn);
-            y1 += ((it->first.second)*r_sn);
+            x1 += iff_a;
+            y1 += ifs_a;
             if (x1 >= 0 && x1 < (int) board.size() && y1 >= 0 && y1 < (int) board[x1].size()){
                 if ((board[x1][y1])){
                     if (board[x1][y1]->team != curr_pl){
@@ -485,22 +490,18 @@ std::unordered_set<std::pair<int,int>,p_hash> Game::accessible_moves(int x, int 
 
 bool Game::accesses_castle(int x0, int y0, int x1, int y1, int& tx, int& ty){// does not account for check
     tx = -1; ty = -1;
-    int f_sn = 1;
-    int r_sn = 1;
     bool capt = 0;
     if (haspiece(x0,y0) && withinbounds(x1,y1)){
-        if (board[x0][y0]->team == 'b'){ // really I should implement facing here instead of hardcoding based on team. 
-            f_sn = -1; r_sn = -1;
-        } else if (board[x0][y0]->team == 'w'){
-           f_sn = 1; r_sn = 1;
-        }
         if (board[x1][y1]){
             capt = 1;
         } else {
             capt = 0;
         }
-        int xdisp = (x1-x0)*f_sn;
-        int ydisp = (y1-y0)*r_sn;
+        int xdisp_a = (x1-x0);
+        int ydisp_a = (y1-y0);
+        int xdisp;
+        int ydisp;
+        board[x0][y0]->facing_AtR(xdisp_a,ydisp_a,xdisp,ydisp);
         if (capt){
             // leaps
             if (board[x0][y0]->moves.cleaps.contains(std::pair(xdisp,ydisp))){return true;}; // todo nonjumping
@@ -510,12 +511,15 @@ bool Game::accesses_castle(int x0, int y0, int x1, int y1, int& tx, int& ty){// 
                 bool njflag = 0;
                 if (xy_divides_zw(it->first.first,it->first.second,xdisp,ydisp)){
                     int aux = it->second; if (aux < 0){njflag = 1; aux = -aux-1;}
+                    int iff_a;
+                    int ifs_a;
+                    board[x0][y0]->facing_RtA(it->first.first,it->first.second,iff_a,ifs_a);
                     int x_1 = x0;
                     int y_1 = y0;
                     int dist = 0;
                     while (aux == 0 || dist < aux){
-                        x_1 += ((it->first.first)*f_sn);
-                        y_1 += ((it->first.second)*r_sn);
+                        x_1 += iff_a;
+                        y_1 += ifs_a;
                         if (withinbounds(x_1,y_1)){
                             if (x1 == x_1 && y1 == y_1){
                                 return true;
@@ -542,12 +546,15 @@ bool Game::accesses_castle(int x0, int y0, int x1, int y1, int& tx, int& ty){// 
                 bool njflag = 0;
                 if (xy_divides_zw(it->first.first,it->first.second,xdisp,ydisp)){
                     int aux = it->second; if (aux < 0){njflag = 1; aux = -aux-1;}
+                    int iff_a;
+                    int ifs_a;
+                    board[x0][y0]->facing_RtA(it->first.first,it->first.second,iff_a,ifs_a);
                     int x_1 = x0;
                     int y_1 = y0;
                     int dist = 0;
                     while (aux == 0 || dist < aux){
-                        x_1 += ((it->first.first)*f_sn);
-                        y_1 += ((it->first.second)*r_sn);
+                        x_1 += iff_a;
+                        y_1 += ifs_a;
                         if (withinbounds(x_1,y_1)){
                             if (x1 == x_1 && y1 == y_1){
                                 return true;

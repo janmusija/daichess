@@ -217,10 +217,11 @@ Moveset::Moveset(std::string bnot, bool initonly){
     }
 } 
 
-Piece::Piece(std::string disp, std::string bnot, char tm){
+Piece::Piece(std::string disp, std::string bnot, char tm, char fc){
     display = disp;
     betza = bnot;
     team = tm;
+    facing = fc;
     royal = 0;
     if (bnot == "Q"){
         bnot = "RB";
@@ -238,6 +239,7 @@ Piece::Piece(std::string disp, std::string bnot, char tm){
 Piece::Piece(char tm, bool r){
     team = tm;
     royal = r;
+    facing = 'f';
 }
 
 void Piece::initialize(){
@@ -268,4 +270,36 @@ void Piece::prune_init_moves(){
             moves.crides.erase(it->first);
         }
     }
+}
+
+bool Piece::facing_RtA(const int x, const int y, int & _x_, int & _y_){ // translate from relative to absolute
+    switch (facing){
+        case 'f': _x_ =  x; _y_ =  y; break;
+        case 'y': _x_ =  x; _y_ = -y; break;
+        case 'x': _x_ = -x; _y_ =  y; break;
+        case 'b': _x_ = -x; _y_ = -y; break;
+        case 'r': _x_ = -y; _y_ =  x; break;
+        case 'l': _x_ =  y; _y_ = -x; break;
+        case 'c': _x_ =  y; _y_ =  x; break;
+        case 'h': _x_ = -y; _y_ = -x; break;
+        default:
+        return 0;
+    }
+    return 1;
+}
+
+bool Piece::facing_AtR(const int x, const int y, int & _x_, int & _y_){ // translate from relative to absolute
+    switch (facing){
+        case 'f': _x_ =  x; _y_ =  y; break;
+        case 'y': _x_ =  x; _y_ = -y; break;
+        case 'x': _x_ = -x; _y_ =  y; break;
+        case 'b': _x_ = -x; _y_ = -y; break;
+        case 'r': _x_ =  y; _y_ = -x; break;
+        case 'l': _x_ = -y; _y_ =  x; break;
+        case 'c': _x_ =  y; _y_ =  x; break;
+        case 'h': _x_ = -y; _y_ = -x; break;
+        default:
+        return 0;
+    }
+    return 1;
 }

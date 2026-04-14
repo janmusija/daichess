@@ -23,6 +23,8 @@ public:
     virtual std::string underlying_prom(Game & g, int x1, int y1, char pl) = 0; // promote
     bool e_move(Game & g, char pl); // wrapped with miscellaneous details to ensure the move is processed properly
     std::string e_prom(Game & g, int x1, int y1, char pl); // promotion
+    char fc;
+    void setfacing (char f){fc = f;}
 };
 
 class random_move : public Engine {

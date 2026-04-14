@@ -41,6 +41,7 @@ public:
     unsigned int width; // i.e. number of files a - p
     unsigned int height; // i.e. number of ranks 1-16
     std::string algebraic_history; //move history of the game
+    std::string algebraic_history_real; //actual move history of the game with like real notation
     std::unordered_map<char,std::pair<int,int>> royals; // positions of royal pieces
     Game(int x,int y);
     Game(int x,int y, std::vector<char> &&p);
@@ -50,8 +51,8 @@ public:
     bool back_pl() {--curr_pl; if (players.size() > 0 && curr_pl < 0){curr_pl += players.size(); --turnctr; return 1;} return 0;}
     char get_pl() {if (curr_pl >= 0 && curr_pl < players.size()) {return players[curr_pl];} else {return '0';}}
 
-    bool placepiece(int x, int y, std::string betza, char team);
-    bool placepiece(int x, int y, std::string disp, std::string betza, char team);
+    bool placepiece(int x, int y, std::string betza, char team, char fc);
+    bool placepiece(int x, int y, std::string disp, std::string betza, char team, char fc);
     std::unique_ptr<Piece>* get (std::string s) {return get(pos_algebraic(s));};
     std::unique_ptr<Piece>* get(std::pair<int,int>xy){return & board[xy.first][xy.second];};
     std::unique_ptr<Piece>* get(int x, int y){

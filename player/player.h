@@ -22,7 +22,7 @@ inline void get_moves(Game & g, int x, int y){
 }
 
 bool player_move(Game & g, int x0, int y0, int x1, int y1, char pl);
-std::string player_promote(Game & g, int x1, int y1, char pteam);
+std::string player_promote(Game & g, int x1, int y1, char pteam, char pf);
 
 inline void get_algebraic_history(const Game & g){
     std::cout << g.algebraic_history << "\n";

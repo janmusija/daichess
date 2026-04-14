@@ -40,12 +40,32 @@ class Piece {
     std::string betza; // for export
     bool royal;
     char team; // 'b' or 'w';
-    // todo: implement `char facing`. can be f (rotated to face +x) r (rotated to face +y) b (-x) or l (-y).
     std::unordered_set<std::string> flag; // e.g. uncastled; ep; not yet moved; 
-    Piece(std::string disp, std::string bnot, char tm); // display string, betza notation, team
+    Piece(std::string disp, std::string bnot, char tm, char fc); // display string, betza notation, team, facing
     void initialize();
     Piece(char tm, bool royal); // dummy piece
     void prune_init_moves(); //get rid of init_only_moves
+
+    char facing; 
+    /* the move (2,1) is:
+
+       y|f
+      l | c    
+      --+--
+      h | r
+       b|x
+    
+       f = ( x, y)
+       y = ( x,-y)
+       x = (-x, y)
+       l = ( y,-x)
+       r = (-y, x)
+       c = ( y, x)
+       h = (-y,-x)
+       b = (-x,-y)
+    */
+    bool facing_RtA(const int x, const int y, int & _x_, int & _y_); // relative to absolute
+    bool facing_AtR(const int x, const int y, int & _x_, int & _y_); // absolute to relative
 };
 
 #endif /* piece.h */

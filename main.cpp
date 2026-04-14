@@ -43,7 +43,7 @@ int main(int argc, char *argv[]){
         }
         if (g.incheck(g.get_pl())){
             if (!g.hasmoves(g.get_pl())){
-                std::cout << "checkmate!! ";
+                std::cout << "checkmate!!\n";
                 if (g.get_pl() == 'b'){
                     std::cout << "white wins!\n";
                 } else {
@@ -53,7 +53,7 @@ int main(int argc, char *argv[]){
                 std::cout << g.algebraic_history;
                 break;
             } else {
-                std::cout << "check!";
+                std::cout << "check!\n";
             }
         } else {
             if (!g.hasmoves(g.get_pl()) || i > 1000){

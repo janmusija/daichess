@@ -107,6 +107,7 @@ void player_menu(Game & g, char pteam){ // display menus, etc, using cin and sho
             std::cout << "Type 'dpass' to pass your turn. (DEBUG MENU)\n";
             std::cout << "Type 'dmv' to forcibly move a piece regardless of legality. This does not pass your turn. (DEBUG MENU)\n";
             std::cout << "Type 'dset' to change or set a piece. Enter position, Betza notation, associated player (e.g. w), and then a display string. (DEBUG MENU)\n";
+            std::cout << "Type 'deface' to change the direction a piece is facing. (DEBUG MENU)\n";
             #endif
             std::cout << "Type 'history' to see the moves of this game so far.\n";
         }
@@ -177,7 +178,16 @@ void player_menu(Game & g, char pteam){ // display menus, etc, using cin and sho
             std::string targ; std::string betza; std::string team;
             std::cin >> targ; std::cin >> betza; std::cin >> team;
             std::pair<int,int> xy0 = pos_algebraic(targ);
-            g.placepiece(xy0.first, xy0.second, betza, team[0]);
+            char fc = 'f';
+            if (pteam == 'b'){fc = 'b';}
+            g.placepiece(xy0.first, xy0.second, betza, team[0],fc);
+        }
+        else if (resp == "deface"){
+            std::string targ; std::cin >> targ; std::string f; std::cin >> f;
+            std::pair<int,int> xy0 = pos_algebraic(targ);
+            if (g.haspiece(xy0.first,xy0.second)){
+                g.board[xy0.first][xy0.second]->facing = f[0];
+            }
         }
         else if (resp == "dpass") {
             turn = 0;
@@ -204,7 +214,7 @@ void player_menu(Game & g, char pteam){ // display menus, etc, using cin and sho
     }
 }
 
-std::string player_promote(Game & g, int x1, int y1, char pteam){
+std::string player_promote(Game & g, int x1, int y1, char pteam, char pf){
     std::cout << "You are in the promotion menu for the piece at " << algebraic_pos(x1,y1) << ". Type 'help' for help.\n";
     bool needs_prom = 1;
     while (needs_prom){
@@ -241,7 +251,7 @@ std::string player_promote(Game & g, int x1, int y1, char pteam){
                 needs_prom = 0;
                 if (g.haspiece(x1,y1)){
                     char tm = g.board[x1][y1]->team;
-                    g.placepiece(x1, y1, g.promo[adhsdjf].first.first, g.promo[adhsdjf].first.second, tm);
+                    g.placepiece(x1, y1, g.promo[adhsdjf].first.first, g.promo[adhsdjf].first.second, tm, pf);
                     return g.promo[adhsdjf].first.second;
                 }
             } else {
@@ -281,7 +291,7 @@ bool player_move(Game & g, int x0, int y0, int x1, int y1, char pl){
                 } else {
                     g.mov(x0,y0,x1,y1);
                     if (g.board[x1][y1]->flag.contains("p") && ((pl=='b' && x1 == 0) || (pl == 'w' && x1 == g.board.size()-1))){ // promoters
-                        std::string gar = player_promote(g,x1,y1, pl);
+                        std::string gar = player_promote(g,x1,y1, pl, (pl=='b')?'b':'f'); // not really a robust way to check facing
                         g.append_to_alg(algebraic_pos(x0,y0),algebraic_pos(x1,y1) + " =" + gar);
                     } else{
                         g.append_to_alg(x0,y0,x1,y1);
