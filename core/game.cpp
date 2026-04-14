@@ -778,7 +778,8 @@ void Game::ahr_update(std::string piece_og, std::string orig_pos, std::string ne
     {
         s += cast_str + new_pos;
     } else {
-        s += prune_spaces(piece_og,' ');
+        std::string p = prune_spaces(piece_og,' ');
+        if (p != "P"){s+= p;}
         for (int i = 0; i< s.length(); i++){
             if (s[i] >= 'a' && s[i] <= 'z'){
                 s[i] += ('A' - 'a');
