@@ -194,6 +194,11 @@ Game default_daichess(){
             g.promo["FD"] = std::make_pair(jon,1);
             g.promo["kirin"] = std::make_pair(jon,0);
         }
+        {   // FN
+            std::pair<std::string,std::string> jon = std::make_pair("FN ","FN");
+            g.promo["FN"] = std::make_pair(jon,1);
+            g.promo["potent knight"] = std::make_pair(jon,0);
+        }
         {   // WC / lightweight 
             std::pair<std::string,std::string> jon = std::make_pair("WC ","WC");
             g.promo["WC"] = std::make_pair(jon,1);
@@ -347,7 +352,7 @@ std::string Game::display_board(bool side){ // to do: unify
          +
     */
     s+=std::string(DISPLAYLEN+3,' ');
-    for (int j = (int) width-1; j>0; --j){
+    for (int j = (int) width-1; j>=0; --j){
         std::string t = algebraic_y(j);
         t.resize(DISPLAYLEN+1,' ');
         s+=t;
@@ -665,7 +670,7 @@ bool Game::legal(int x0, int y0, int x1, int y1, char pl){
         return true;
     }
     if (tx != -1){
-        Game g = copy();
+        Game g(*this);
         int vx = x1 - x0; int vy = y1 - y0; vx = vx/2; vy = vy/2;
         g.mov(x0,y0,x1,y1);
         g.mov(tx,ty,x0+vx,y0+vy);
@@ -779,7 +784,7 @@ void Game::ahr_update(std::string piece_og, std::string orig_pos, std::string ne
         s += cast_str + new_pos;
     } else {
         std::string p = prune_spaces(piece_og,' ');
-        if (p != "P"){s+= p;}
+        if (p != "P" && p!= "p"){s+= p;}
         for (int i = 0; i< s.length(); i++){
             if (s[i] >= 'a' && s[i] <= 'z'){
                 s[i] += ('A' - 'a');
@@ -806,9 +811,4 @@ void Game::ahr_update(std::string piece_og, std::string orig_pos, std::string ne
     } 
     s+=" ";
     algebraic_history_real += s;
-}
-
-Game Game::copy(){
-    Game h(*this);
-    return h;
 }

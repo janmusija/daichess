@@ -14,6 +14,10 @@
 #include <random>
 #include <ctime>
 #include <string>
+#include <limits>
+#include <math.h>
+#include <functional>
+#include "engine/game_man.h"
 
 // tk
 
@@ -62,6 +66,33 @@ public:
     std::pair<std::pair<int,int>,std::pair<int,int>> underlying_move(Game & g, char pl);
     std::string underlying_prom(Game & g, int x1, int y1, char pl);
     unsigned short tiebreak = 2; // to prevent getting stuck in a loop
+};
+
+float move_count_heuristic(Piece & p, const int boardsize); // for a piece's value. TODO: make better
+
+#define BOARDSIZE_FOR_ALGO 16
+
+float quick_heuristic(const Game & g, char pl, float & next_p_tot, float & prev_p_tot, std::unordered_map<std::string,float> & val_cache); // designed for a two player game. pl is the player to move = next_p.
+// evaluates the game for the next player.
+
+class basic_search_algo : public Engine {
+    /*
+    makes a move by first trying all its possible moves, then trying all your possible moves. searches tree to a depth of [depth] moves (counting players' moves separately).
+    after every [prunefreq] steps, prunes by using the quick heuristic. maybe I could make this functional but that sounds Too Fun
+    obvious vulnerability: may prune too much.
+    at the end, chooses whatever minmaxes value.
+    */
+public:
+    std::pair<std::pair<int,int>,std::pair<int,int>> underlying_move(Game & g, char pl);
+    std::string underlying_prom(Game & g, int x1, int y1, char pl);
+    std::unordered_map<std::string,float> val_cache;
+    std::string promcache;
+
+
+    unsigned int depth; // how deep to search
+    unsigned int prunefreq; // how often to prune
+    unsigned int max_at_prune; // how many nodes to leave after pruning.
+    basic_search_algo(unsigned int d = 2, unsigned int pf = 2, unsigned int m_a_p = 4){depth = d; prunefreq = pf; max_at_prune = m_a_p;}
 };
 
 #endif /* engines.h */

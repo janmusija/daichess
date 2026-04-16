@@ -113,7 +113,8 @@ public:
     // get a copy of the game
 
     Game(const Game & g);
-    Game copy();
+    Game(Game&& g) noexcept = default;
+    Game& operator=(Game&& other) noexcept = default;
 };
 
 Game default_daichess();

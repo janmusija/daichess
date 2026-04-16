@@ -53,7 +53,7 @@ int main(int argc, char *argv[]){
                 std::cout << g.algebraic_history_real;
                 break;
             } else {
-                std::cout << "check!\n";
+                std::cout << "check!\n"; // I should be adding these to the notation I guess
             }
         } else {
             if (!g.hasmoves(g.get_pl()) || i > 1000){
