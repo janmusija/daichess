@@ -16,7 +16,7 @@ int main(int argc, char *argv[]){
     std::unordered_map<char,int> ai_id_map;
     Game g = main_menu(ai_id_map);
     bool flagnew = 1;
-    std::cout << "type 'help' to show commands.";
+    std::cout << "type 'help' to show commands.\n";
     {
         std::string gar = std::to_string(g.turnctr);
         g.algebraic_history += gar + ". ";
@@ -25,6 +25,8 @@ int main(int argc, char *argv[]){
     // can be changed. more robust tournament support later.
     random_move ai_0;
     CCCP ai_1;
+    basic_search_algo ai_2(2);
+    basic_search_algo ai_3(3);
 
     int i = 0;
     char res = ' ';
@@ -75,6 +77,10 @@ int main(int argc, char *argv[]){
                 played_successfully = ai_0.e_move(g,g.get_pl()); break;
                 case 1:
                 played_successfully = ai_1.e_move(g,g.get_pl()); break;
+                case 2:
+                played_successfully = ai_2.e_move(g,g.get_pl()); break;
+                case 3:
+                played_successfully = ai_3.e_move(g,g.get_pl()); break;
                 default:
                 played_successfully = ai_0.e_move(g,g.get_pl()); break;
             }

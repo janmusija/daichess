@@ -26,6 +26,11 @@ public:
     void prom(int x, int y);
     void commit_move_to_stack(); // does not make the move, because there is insufficient info
 
+
+    void execute_move(std::string __mov,std::string & prom); // parse out a move and add it to the history. This is a different syntax from history,
+    // differing in that instead of - x1 y1 for captures and promotions there is only = [string] for promotions [and it is implicitly at the last position]
+    void execute_moves(std::string __movs, std::string & prom); // parse out as sequence of moves and run execute_move repeatedly
+
     void pc_to_stack(int x, int y);
     void pc_from_stack(int x, int y);
     bool undo();

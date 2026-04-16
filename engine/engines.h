@@ -78,8 +78,6 @@ float quick_heuristic(const Game & g, char pl, float & next_p_tot, float & prev_
 class basic_search_algo : public Engine {
     /*
     makes a move by first trying all its possible moves, then trying all your possible moves. searches tree to a depth of [depth] moves (counting players' moves separately).
-    after every [prunefreq] steps, prunes by using the quick heuristic. maybe I could make this functional but that sounds Too Fun
-    obvious vulnerability: may prune too much.
     at the end, chooses whatever minmaxes value.
     */
 public:
@@ -88,11 +86,13 @@ public:
     std::unordered_map<std::string,float> val_cache;
     std::string promcache;
 
+    std::pair<float,std::string> find_best_move(unsigned int lev,Game_Man & gm);
 
     unsigned int depth; // how deep to search
-    unsigned int prunefreq; // how often to prune
-    unsigned int max_at_prune; // how many nodes to leave after pruning.
-    basic_search_algo(unsigned int d = 2, unsigned int pf = 2, unsigned int m_a_p = 4){depth = d; prunefreq = pf; max_at_prune = m_a_p;}
+    basic_search_algo(unsigned int d = 2){depth = d;}
+private:
+    void __add_moves_to_stack(std::stack<std::string> & stk,Game_Man & gm);
+    void __add_promote_children_to_stack(std::string basemove, std::stack<std::string> & stk,Game_Man & gm);
 };
 
 #endif /* engines.h */

@@ -64,7 +64,7 @@ Game main_menu(std::unordered_map<char,int> & ai_id_map){ // present player with
             }
         }
         if (both_ai || ai_opp){
-            std::cout << "ai ids are integers from 0 to 1 (inclusive).\n"; //document further later
+            std::cout << "ai ids are integers from 0 to 3 (inclusive).\n"; //document further later
         }
         if (both_ai){
             std::cout << "Enter id for ai playing white: ";

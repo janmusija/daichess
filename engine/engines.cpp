@@ -7,6 +7,9 @@
 #include "engine/engines.h"
 #include <sstream>
 
+#define DEBUG_ENGINE false
+#define DEBUG_ENGINE_VERBOSE false
+
 bool Engine::e_move(Game & g, char pl){
     std::pair<std::pair<int,int>,std::pair<int,int>> m = underlying_move(g,pl);
     int x0 = m.first.first; int y0 = m.first.second; int x1 = m.second.first; int y1 = m.second.second;
@@ -47,6 +50,7 @@ bool Engine::e_move(Game & g, char pl){
 
 std::string Engine::e_prom(Game & g, int x1, int y1, char pl){
     std::string adgadshf = underlying_prom(g,x1,y1,pl);
+    if (adgadshf == ""){adgadshf == "Q";}
     char tm = g.board[x1][y1]->team;
     g.placepiece(x1, y1, g.promo[adgadshf].first.first, g.promo[adgadshf].first.second, tm, fc);
     return g.promo[adgadshf].first.second;
@@ -58,14 +62,12 @@ std::pair<std::pair<int,int>,std::pair<int,int>> random_move::underlying_move(Ga
 }
 
 std::string random_move::underlying_prom(Game & g, int x1, int y1, char pl){
-    if (g.haspiece(x1,y1)){
-        auto it = g.promo.begin();
-        unsigned int gar = rng() % g.promo.size();
-        for (int i = 0; i<gar; ++i){
-            ++it;
-        }
-        return it->first;
+    auto it = g.promo.begin();
+    unsigned int gar = rng() % g.promo.size();
+    for (int i = 0; i<gar; ++i){
+        ++it;
     }
+    return it->first;
 }
 
 std::pair<std::pair<int,int>,std::pair<int,int>> CCCP::underlying_move(Game & g, char pl){
@@ -124,14 +126,12 @@ std::pair<std::pair<int,int>,std::pair<int,int>> CCCP::underlying_move(Game & g,
 }
 
 std::string CCCP::underlying_prom(Game & g, int x1, int y1, char pl){
-    if (g.haspiece(x1,y1)){
-        std::string adgadshf = "Q";
-        if (!g.promo.contains("Q")){
-            auto it = g.promo.begin();
-            adgadshf = it->first;
-        }
-        return adgadshf;
+    std::string adgadshf = "Q";
+    if (!g.promo.contains("Q")){
+        auto it = g.promo.begin();
+        adgadshf = it->first;
     }
+    return adgadshf;
 }
 
 std::pair<int,int> pick_random_member(const std::unordered_set<std::pair<int,int>,p_hash>& options, std::mt19937& rng){ // returns (-1,-1) on fail
@@ -163,6 +163,7 @@ float move_count_heuristic(Piece & p, const int boardsize){
     f += (float)(p.moves.mleaps.size() + p.moves.cleaps.size() + p.moves.mrides.size() + p.moves.crides.size())/2;
 
     // bonus from rides. ideally make this a better heuristic.
+    /*
     for (auto it = p.moves.mrides.begin(); it != p.moves.mrides.end(); it++){
         int xl = it->first.first; int yl = it->first.second; int allowed_dist = it->second;
         float r = std::sqrt((float)(xl*xl + yl*yl));
@@ -171,7 +172,7 @@ float move_count_heuristic(Piece & p, const int boardsize){
         if (nummoves >= 1){
             f+= 1.5*(1-std::exp((1-nummoves)/7));
         }
-    }  
+    } */ 
 
 
     return f/3;
@@ -189,79 +190,148 @@ float quick_heuristic(Game & g, char pl, float & next_p_tot, float & prev_p_tot,
             next_p_tot = -STALEMATE_PREFERABLE_DISADVANTAGE; prev_p_tot = 0; return next_p_tot;
         }
     }
+    if (g.incheck(pl)){
+        next_p_tot -= 0.5;
+    }
+    unsigned int total_pieces = 0;
+    unsigned int total_spaces = g.board.size()*g.board[0].size();
+    float center_control_fudge = 0.2;
+    int center_control_n = 0;
+    int center_control_p = 0;
     for (int i = 0; i<g.board.size(); i++){
         for (int j = 0; j < g.board[i].size(); j++){
             if (g.board[i][j]){
                 if (!val_cache.contains(g.board[i][j]->betza)){
                     val_cache[g.board[i][j]->betza] = move_count_heuristic(*g.board[i][j],BOARDSIZE_FOR_ALGO);
                 }
+                ++total_pieces;
                 if (g.board[i][j]->team == pl){
                     next_p_tot += val_cache[g.board[i][j]->betza];
+                    if (i >= g.board.size()/3 && j >= g.board.size()/3 && i < g.board.size() - (g.board.size()/3) && j < g.board.size() - (g.board.size()/3)){
+                    center_control_n++;
+                    }
                 } else {
                     prev_p_tot += val_cache[g.board[i][j]->betza];
+                    if (i >= g.board.size()/3 && j >= g.board.size()/3 && i < g.board.size() - (g.board.size()/3) && j < g.board.size() - (g.board.size()/3)){
+                    center_control_p++;
+                    }
                 }
             }
         }
     }
-    return next_p_tot - prev_p_tot;
+    if (total_spaces/total_pieces < 6){
+        if (center_control_n> 3){
+            center_control_n = 3;
+        }
+        if (center_control_p > 3){
+            center_control_p = 3;
+        }
+        next_p_tot += center_control_fudge * (center_control_n-center_control_p);
+    }
+    float v = next_p_tot - prev_p_tot;
+    #if DEBUG_ENGINE_VERBOSE
+    std::cout << "value: " << v << " = " << next_p_tot << " - " << prev_p_tot << "   ";
+    #endif
+    return v;
 }
 
 std::pair<std::pair<int,int>,std::pair<int,int>> basic_search_algo::underlying_move(Game & g, char pl){
     Game_Man gm(g);
-    unsigned int lev = 0;
-
-    std::stack<std::pair<std::string,unsigned int>> search_tree;
-
-    {// add initial stuff to stack
-    std::unordered_set<std::pair<std::pair<int,int>,std::pair<int,int>>,q_hash> s = gm.game.all_legal_moves(pl);
-    for (auto it = s.begin(); it != s.end(); it++){
-        std::string str = std::to_string(it->first.first) + " " + std::to_string(it->first.second) + " " + std::to_string(it->second.first) + " " + std::to_string(it->second.second);
-        //if // condition for promotion // add separate moves for each individual promotion... yep
-        search_tree.push(std::make_pair(str,lev+1));
+    while (gm.game.get_pl() != pl){
+        gm.game.fore_pl();
     }
-    }
-    std::string CURR_MOVE_SEQ = "";
-    std::string CURR_MOVE = "";
-    std::unordered_map<std::string,float> move_valuation;
-    std::unordered_map<std::string,float> temp_valuations;
+    std::pair<float,std::string> s = find_best_move(0,gm);
 
-    while (!search_tree.empty()){
-        // expand. periodically prune. etc
-        unsigned int CURR_HT = search_tree.top().second;
-        if (lev > CURR_HT){
-            // undo move.
-            // going down a layer. evaluate by minmax of children in move_valuation.
-        }
-        CURR_MOVE = search_tree.top().first;
-        CURR_MOVE_SEQ += ";" + CURR_MOVE;
-        std::istringstream iss_0(CURR_MOVE);
-
-        // parse CURR_MOVE into relevant bits (x0, y0, x1, y1; whether it is castling, potentially promotion) and make move in [gm.game]
-
-        if (CURR_HT == depth){
-            // we are at the deepest allowed node. evaluate, add to move_valuation.
-        } else if (CURR_HT % prunefreq == 0){
-            // do not propagate further yet. evaluate, add to temporary collection [temp_valuations] of current-depth champions.
-        } else {
-            // continue propagation.
-        }
-    }
-
-
-
-
-
-
-    // cleanup
-    while (!search_tree.empty()){
-        search_tree.pop();
-    }
+    // parse s:
+    std::istringstream iss(s.second);
+    std::string s_1; std::pair<std::pair<int,int>,std::pair<int,int>> ret;
+    getline(iss, s_1,' '); ret.first.first = std::atoi(s_1.c_str());
+    getline(iss, s_1,' '); ret.first.second = std::atoi(s_1.c_str());
+    getline(iss, s_1,' '); ret.second.first = std::atoi(s_1.c_str());
+    getline(iss, s_1,' '); ret.second.second = std::atoi(s_1.c_str());
+    return ret;
 }
+
 std::string basic_search_algo::underlying_prom(Game & g, int x1, int y1, char pl){
     if (promcache != ""){
         std::string p = promcache; promcache = "";
         return p;
     } else {
-        // TK
+        return "";
     }
 }
+
+ void basic_search_algo::__add_moves_to_stack(std::stack<std::string> & stk,Game_Man & gm){
+    std::unordered_set<std::pair<std::pair<int,int>,std::pair<int,int>>,q_hash> s = gm.game.all_legal_moves(gm.game.get_pl());
+    for (auto it = s.begin(); it != s.end(); it++){
+        std::string str = std::to_string(it->first.first) + " " + std::to_string(it->first.second) + " " + std::to_string(it->second.first) + " " + std::to_string(it->second.second);
+        int tx; int ty;
+        if (gm.game.validcastle(it->first.first, it->first.second, it->second.first, it->second.second, tx, ty)){
+            str += " " + std::to_string(tx) + " " + std::to_string(ty) + " " + std::to_string((it->first.first + it->second.first)/2) + " " + std::to_string((it->first.second + it->second.second)/2); // if you change castling this will need changing. it is where the rook goes 
+        }
+        if (
+            gm.game.board[it->first.first][it->first.second]->flag.contains("p") && ((gm.game.get_pl()=='b' && it->second.first == 0) || (gm.game.get_pl() == 'w' && it->second.first == gm.game.board.size()-1)) // condition for promotion
+        ){__add_promote_children_to_stack(str,stk,gm);}
+        else {stk.push(str);}
+    }
+ }
+ void basic_search_algo::__add_promote_children_to_stack(std::string basemove, std::stack<std::string> & stk,Game_Man & gm){
+    for (auto it = gm.game.promo.begin(); it!= gm.game.promo.end(); it++){
+        if (it->second.second){
+            stk.push(basemove + " = " + it->first);
+        }
+    }
+ }
+
+ 
+ #if DEBUG_ENGINE
+ #include <iostream>
+ #endif
+ std::pair<float,std::string> basic_search_algo::find_best_move(unsigned int lev,Game_Man & gm){
+    // recursively search for best move. check the value of the current position
+    std::stack<std::string> stk; // it  doesn't really matter if this is a stack or a queue or something literally all I need is a container that lets me put things in and then access them
+    __add_moves_to_stack(stk,gm);
+    #if DEBUG_ENGINE
+    unsigned int lim = stk.size();
+    #endif
+    if (stk.empty()){
+        if (gm.game.incheck(gm.game.get_pl())){
+            return std::make_pair(-std::numeric_limits<float>::infinity(),"");
+        } else {return std::make_pair(-STALEMATE_PREFERABLE_DISADVANTAGE,"");}
+    }
+    float val = std::numeric_limits<float>::infinity();
+    std::string min_move = "";
+    while (!stk.empty()){
+        std::string str = stk.top();
+        #if DEBUG_ENGINE
+        unsigned int ct = lim-stk.size();
+        #endif
+        float val1;
+        std::string pstring;
+        gm.execute_move(str,pstring); // move
+        if (lev+1 < depth){
+            val1 = find_best_move(lev+1,gm).first;
+        } else {
+            float garb1 = 0; float garb2 = 0;
+            val1 = quick_heuristic(gm.game, gm.game.get_pl(), garb1, garb2, val_cache);
+        }
+        if (val1 < val){
+            val = val1;
+            min_move = str;
+            promcache=pstring;
+        }
+
+        gm.undo(); // unmove
+        stk.pop();
+
+        #if DEBUG_ENGINE
+        std::cout << lev << " (" << ct << "/" << lim << "): " << str;
+        #if DEBUG_ENGINE_VERBOSE
+        std::cout << ": " << -val << "\n";
+        #else 
+        std::cout << "\n";
+        #endif
+        #endif
+    }
+    return std::make_pair(-val,min_move);
+ }
