@@ -59,8 +59,8 @@ Game default_daichess(){
     std::string start[8][16] {
         // lowest y                                   //highest y
         {"WB","WDD","R","FAA","NB","HFD","ZNG","WAH","WAH","ZNG","HFD","NR","FAA","R","WDD","WB"}, // highest x
-        {"R","Z","FC","WFiW2iF2","FN","WC","B","Q","K","B","WC","FN","WFiW2iF2","FC","Z","R"},
-        {"FDiF2iD2","B","WAiW2iA2","NiN2","FDiF2iD2","WDiW2iD2","FiF2","NiN2","NiN2","FiF2","WDiW2iD2","FDiF2iD2","NiN2","WAiW2iA2","B","FDiF2iD2"},
+        {"R","Z","FC","WFimW2imF2","FN","WC","B","Q","K","B","WC","FN","WFimW2imF2","FC","Z","R"},
+        {"FDimF2imD2","B","WAimW2imA2","NimN2","FDimF2imD2","WDimW2imD2","FimF2","NimN2","NimN2","FimF2","WDimW2imD2","FDimF2imD2","NimN2","WAimW2imA2","B","FDimF2imD2"},
         {"P","P","P","P","P","P","P","P","P","P","P","P","P","P","P","P"},
         {"","","","","","","","","","","","","","","",""},
         {"","","","","","","","","","","","","","","",""},

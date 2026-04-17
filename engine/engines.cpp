@@ -163,16 +163,25 @@ float move_count_heuristic(Piece & p, const int boardsize){
     f += (float)(p.moves.mleaps.size() + p.moves.cleaps.size() + p.moves.mrides.size() + p.moves.crides.size())/2;
 
     // bonus from rides. ideally make this a better heuristic.
-    /*
+    
     for (auto it = p.moves.mrides.begin(); it != p.moves.mrides.end(); it++){
         int xl = it->first.first; int yl = it->first.second; int allowed_dist = it->second;
         float r = std::sqrt((float)(xl*xl + yl*yl));
         if (!(r >= 1)) {continue;}
         float nummoves = ((float)boardsize)/r; if (nummoves > allowed_dist){nummoves = allowed_dist;}
         if (nummoves >= 1){
-            f+= 1.5*(1-std::exp((1-nummoves)/7));
+            f+= 1.6*(1-std::exp((1-nummoves)/7));
         }
-    } */ 
+    } 
+    for (auto it = p.moves.crides.begin(); it != p.moves.crides.end(); it++){
+        int xl = it->first.first; int yl = it->first.second; int allowed_dist = it->second;
+        float r = std::sqrt((float)(xl*xl + yl*yl));
+        if (!(r >= 1)) {continue;}
+        float nummoves = ((float)boardsize)/r; if (nummoves > allowed_dist){nummoves = allowed_dist;}
+        if (nummoves >= 1){
+            f+= 1.6*(1-std::exp((1-nummoves)/7));
+        }
+    } 
 
 
     return f/3;
@@ -193,40 +202,23 @@ float quick_heuristic(Game & g, char pl, float & next_p_tot, float & prev_p_tot,
     if (g.incheck(pl)){
         next_p_tot -= 0.5;
     }
-    unsigned int total_pieces = 0;
-    unsigned int total_spaces = g.board.size()*g.board[0].size();
-    float center_control_fudge = 0.2;
-    int center_control_n = 0;
-    int center_control_p = 0;
+    #define DEVELOPMENT_MULT 0.01
     for (int i = 0; i<g.board.size(); i++){
+        int bs = g.board.size()-1;
         for (int j = 0; j < g.board[i].size(); j++){
             if (g.board[i][j]){
                 if (!val_cache.contains(g.board[i][j]->betza)){
                     val_cache[g.board[i][j]->betza] = move_count_heuristic(*g.board[i][j],BOARDSIZE_FOR_ALGO);
                 }
-                ++total_pieces;
                 if (g.board[i][j]->team == pl){
                     next_p_tot += val_cache[g.board[i][j]->betza];
-                    if (i >= g.board.size()/3 && j >= g.board.size()/3 && i < g.board.size() - (g.board.size()/3) && j < g.board.size() - (g.board.size()/3)){
-                    center_control_n++;
-                    }
+                    next_p_tot += DEVELOPMENT_MULT * ((pl == 'b') ? (bs-i) : i); 
                 } else {
                     prev_p_tot += val_cache[g.board[i][j]->betza];
-                    if (i >= g.board.size()/3 && j >= g.board.size()/3 && i < g.board.size() - (g.board.size()/3) && j < g.board.size() - (g.board.size()/3)){
-                    center_control_p++;
-                    }
+                    prev_p_tot += DEVELOPMENT_MULT * ((pl == 'b') ? i : (bs - i)); 
                 }
             }
         }
-    }
-    if (total_spaces/total_pieces < 6){
-        if (center_control_n> 3){
-            center_control_n = 3;
-        }
-        if (center_control_p > 3){
-            center_control_p = 3;
-        }
-        next_p_tot += center_control_fudge * (center_control_n-center_control_p);
     }
     float v = next_p_tot - prev_p_tot;
     #if DEBUG_ENGINE_VERBOSE
