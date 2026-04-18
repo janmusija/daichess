@@ -69,6 +69,7 @@ public:
 };
 
 float move_count_heuristic(Piece & p, const int boardsize); // for a piece's value. TODO: make better
+inline float ride_bonus(int x, int y, int len, const int boardsize);
 
 #define BOARDSIZE_FOR_ALGO 16
 

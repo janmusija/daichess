@@ -158,37 +158,65 @@ std::pair<std::pair<int,int>,std::pair<int,int>> pick_random_member(const std::u
     return *it;
 }
 
-float move_count_heuristic(Piece & p, const int boardsize){
-    float f = 1.5;
-    f += (float)(p.moves.mleaps.size() + p.moves.cleaps.size() + p.moves.mrides.size() + p.moves.crides.size())/2;
+float move_count_heuristic(Piece & __p, const int boardsize){
+    Piece p = __p;
+    p.prune_init_moves();
+    double f = (p.moves.mleaps.size() + p.moves.cleaps.size() + p.moves.mrides.size() + p.moves.crides.size())/2.0;
 
-    // bonus from rides. ideally make this a better heuristic.
-    
+    bool cb = 1;
+    // process moving leaps individually
+    for (auto it = p.moves.mleaps.begin(); it != p.moves.mleaps.end(); it++){
+        if (std::abs(it->first.first + it->first.second) % 2 == 1){
+            cb = 0;
+        }
+    }
+
+    // process capturing leaps individually
+    for (auto it = p.moves.cleaps.begin(); it != p.moves.cleaps.end(); it++){
+        if (std::abs(it->first.first + it->first.second) % 2 == 1){
+            cb = 0;
+        }
+    }
+
+    // process moving rides individually
     for (auto it = p.moves.mrides.begin(); it != p.moves.mrides.end(); it++){
-        int xl = it->first.first; int yl = it->first.second; int allowed_dist = it->second;
-        float r = std::sqrt((float)(xl*xl + yl*yl));
-        if (!(r >= 1)) {continue;}
-        float nummoves = ((float)boardsize)/r; if (nummoves > allowed_dist){nummoves = allowed_dist;}
-        if (nummoves >= 1){
-            f+= 1.6*(1-std::exp((1-nummoves)/7));
+        if (std::abs(it->first.first + it->first.second) % 2 == 1){
+            cb = 0;
         }
+        f += ride_bonus(it->first.first, it->first.second, it->second, boardsize);
     } 
+
+    // process capturing rides individually
     for (auto it = p.moves.crides.begin(); it != p.moves.crides.end(); it++){
-        int xl = it->first.first; int yl = it->first.second; int allowed_dist = it->second;
-        float r = std::sqrt((float)(xl*xl + yl*yl));
-        if (!(r >= 1)) {continue;}
-        float nummoves = ((float)boardsize)/r; if (nummoves > allowed_dist){nummoves = allowed_dist;}
-        if (nummoves >= 1){
-            f+= 1.6*(1-std::exp((1-nummoves)/7));
+        if (std::abs(it->first.first + it->first.second) % 2 == 1){
+            cb = 0;
         }
+        f += ride_bonus(it->first.first, it->first.second, it->second, boardsize);
     } 
+    if (cb){ // color binding penalty
+        f = f * 0.85;
+    }
 
-
-    return f/3;
+    return (float)(f/3)+0.5;
 }  
+
+inline float ride_bonus(int x, int y, int len, const int boardsize){
+    const float EMPTY_PROB = 0.83;
+    if (len < 0){
+        len = -1-len;
+    }
+    float r = std::sqrt((float)((x*x) + (y*y)));
+    float nummoves = boardsize/(2*r);
+    if (nummoves > len && len != 0) {
+        nummoves = len;
+    }
+    return ((1-std::pow(EMPTY_PROB,nummoves))/(1-EMPTY_PROB) -1)/2;
+}
 
 #define BOARDSIZE_FOR_ALGO 16
 #define STALEMATE_PREFERABLE_DISADVANTAGE 10
+
+#define SHOW_VALS false
 
 float quick_heuristic(Game & g, char pl, float & next_p_tot, float & prev_p_tot, std::unordered_map<std::string,float> & val_cache){ // designed for a two player game. pl is the player to move = next_p.
     // evaluates the game for the next player.
@@ -209,6 +237,9 @@ float quick_heuristic(Game & g, char pl, float & next_p_tot, float & prev_p_tot,
             if (g.board[i][j]){
                 if (!val_cache.contains(g.board[i][j]->betza)){
                     val_cache[g.board[i][j]->betza] = move_count_heuristic(*g.board[i][j],BOARDSIZE_FOR_ALGO);
+                    #if SHOW_VALS
+                    std::cout << g.board[i][j]->betza << ": " << val_cache[g.board[i][j]->betza] << "\n"; 
+                    #endif
                 }
                 if (g.board[i][j]->team == pl){
                     next_p_tot += val_cache[g.board[i][j]->betza];
