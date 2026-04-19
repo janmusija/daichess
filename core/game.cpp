@@ -109,6 +109,7 @@ Game default_daichess(){
             std::pair<std::string,std::string> jon = std::make_pair(" R ","R");
             g.promo["R"] = std::make_pair(jon,1);
             g.promo["rook"] = std::make_pair(jon,0);
+            g.promo["castle"] = std::make_pair(jon,0);
         }
         {   // double store
             std::pair<std::string,std::string> jon = std::make_pair(" B ","B");
@@ -119,6 +120,7 @@ Game default_daichess(){
             std::pair<std::string,std::string> jon = std::make_pair(" N ","N");
             g.promo["N"] = std::make_pair(jon,1);
             g.promo["knight"] =  std::make_pair(jon,0);
+            g.promo["horse"] = std::make_pair(jon,0);
         }
         {   // queen
             std::pair<std::string,std::string> jon = std::make_pair(" Q ","Q");
@@ -159,6 +161,8 @@ Game default_daichess(){
             std::pair<std::string,std::string> jon = std::make_pair("WAH","WAH");
             g.promo["WAH"] = std::make_pair(jon,1);
             g.promo["waluigi"] = std::make_pair(jon,0); // (no affiliation)
+            g.promo["wah"] = std::make_pair(jon,0);
+            g.promo["bard"] = std::make_pair(jon,0); // because it is a guitar pedal. this is probably my most reasonable name for it. maybe "lutist" also works
         }
         {   // ZNG
             std::pair<std::string,std::string> jon = std::make_pair("ZNG","ZNG");
@@ -198,6 +202,7 @@ Game default_daichess(){
             std::pair<std::string,std::string> jon = std::make_pair("FN ","FN");
             g.promo["FN"] = std::make_pair(jon,1);
             g.promo["potent knight"] = std::make_pair(jon,0);
+            g.promo["pony"] = std::make_pair(jon,0);
         }
         {   // WC / lightweight 
             std::pair<std::string,std::string> jon = std::make_pair("WC ","WC");
