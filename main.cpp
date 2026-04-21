@@ -58,7 +58,7 @@ int main(int argc, char *argv[]){
                 std::cout << "check!\n"; // I should be adding these to the notation I guess
             }
         } else {
-            if (!g.hasmoves(g.get_pl()) || i > 1000){
+            if (!g.hasmoves(g.get_pl())){
                 std::cout << "stalemate...\n";
                 std::cout << g.display_board(0);
                 std::cout << g.algebraic_history_real;
