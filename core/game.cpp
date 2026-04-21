@@ -147,8 +147,8 @@ Game parse_ifstream_to_game(std::ifstream & ifs){
         std::cout << "WARNING: nonempty line after promotions.";
     }
     while (getline(ifs, ln,'\n') && ln.length() > 0){
-        int curr_x;
-        int curr_y;
+        int curr_x = 0;
+        int curr_y = 0;
         std::stringstream sstr1(ln);
         while (getline(sstr1, comma_ln,',')){
             if (comma_ln.length() != 0){
