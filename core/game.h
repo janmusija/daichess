@@ -12,6 +12,7 @@
 #include <vector>
 #include <unordered_map>
 #include <memory>
+#include <fstream>
 
 
 std::string algebraic_pos(int, int);
@@ -118,6 +119,8 @@ public:
 };
 
 Game default_daichess();
+Game parse_ifstream(std::ifstream & ifs);
+
 
 std::string algebraic_x(int x);
 std::string algebraic_y(int y);

@@ -54,6 +54,127 @@ bool Game::placepiece(int x, int y, std::string disp, std::string betza, char tm
     return 1;
 }
 
+#include <sstream>
+Game parse_ifstream_to_game(std::ifstream & ifs){
+    // format:
+    {
+        /*
+        [width]
+        [height]
+        [length of display names]
+        [moveintochecklegal]
+        [player1][player2][player3]
+        P :[betza]:[display]:[primary promotion string]:[secondary promotion string 1]:[secondary promotion string 2]:[etc]
+        P :[betza]:[display]:[primary promotion string]:[secondary promotion string 1]:[secondary promotion string 2]:[etc]
+        ...
+
+        // to indicate promotion is over, empty space
+        betza:display:tm:facing,betza:display:tm:facing,betza:display:tm:facing...
+        betza:display:tm:facing,betza:display:tm:facing,betza:display:tm:facing...
+        betza:display:tm:facing,betza:display:tm:facing,betza:display:tm:facing...
+        ...
+        */
+        // for example, some approximation of FIDE chess
+        /*
+        8
+        8
+        1
+        wb
+        0
+        P :Q:Q:Q
+        P :R:R:R
+        P :B:B:B
+        P :N:N:N
+        
+        R:R:w:f,N:N:w:f,B:B:w:f,RB:Q:w:f,K:K:w:f,B:B:w:f,N:N:w:f,R:R:w:f
+        P:P:w:f,P:P:w:f,P:P:w:f,P:P:w:f,P:P:w:f,P:P:w:f,P:P:w:f,P:P:w:f
+        ,,,,,,,
+        ,,,,,,,
+        ,,,,,,,
+        ,,,,,,,
+        P:p:b:b,P:p:b:b,P:p:b:b,P:p:b:b,P:p:b:b,P:p:b:b,P:p:b:b,P:p:b:b
+        R:r:b:b,N:n:b:b,B:b:b:b,RB:q:b:b,K:k:b:b,B:b:b:b,N:n:b:b,R:r:b:b
+        */
+    }
+    unsigned int wid;
+    unsigned int ht;
+    std::string ln;
+    std::string comma_ln;
+    std::string colon_ln;
+
+    getline(ifs, ln,'\n');
+    wid = std::atoi(ln.c_str());
+    getline(ifs, ln,'\n');
+    ht = std::atoi(ln.c_str());
+
+    unsigned int piece_width;
+    getline(ifs, ln,'\n');
+    piece_width = std::atoi(ln.c_str());
+
+    std::string micl;
+    getline(ifs, micl,'\n');
+    
+
+    getline(ifs, ln,'\n');
+    std::vector<char> v;
+    for (int i = 0; i<ln.length(); i++){
+        v.push_back(ln[i]);
+    }
+    Game g = Game(wid,ht,std::move(v));
+    if (micl == "yes" || micl == "1" || micl == "y" || micl == "true"){
+        g.move_into_check_legal = true;
+    } else {
+        g.move_into_check_legal = false; // by default
+    }
+
+    while (getline(ifs, ln,'\n') && ln.length() > 0 && ln[0] == 'P'){
+        std::stringstream sstr(ln);
+        getline(sstr, colon_ln,':');
+        // junk
+        std::string betz; std::string disp; std::string ppr;
+        getline(sstr, betz,':');
+        getline(sstr, disp,':');disp.resize(piece_width,' ');
+        getline(sstr, ppr, ':');
+        std::pair<std::string,std::string> jon = std::make_pair(disp,betz);
+        g.promo[ppr] = std::make_pair(jon,1);
+        while (getline(sstr, colon_ln,':')){
+            if (colon_ln.length() > 0){
+            g.promo[colon_ln] = std::make_pair(jon,0);
+            }
+        }
+    }
+    if (ln.length() != 0){
+        std::cout << "WARNING: nonempty line after promotions.";
+    }
+    while (getline(ifs, ln,'\n') && ln.length() > 0){
+        int curr_x;
+        int curr_y;
+        std::stringstream sstr1(ln);
+        while (getline(sstr1, comma_ln,',')){
+            if (comma_ln.length() != 0){
+                std::stringstream sstr(ln); // betza:display:tm:facing
+                std::string betz; std::string disp; char team; char facing;
+                getline(sstr,betz,':');
+                getline(sstr,disp,':'); disp.resize(piece_width,' ');
+                getline(sstr,colon_ln,':'); team = colon_ln[0];
+                getline(sstr,colon_ln,':'); facing = colon_ln[0];
+                g.placepiece(curr_x,curr_y,disp,betz,team,facing); 
+            }
+            ++curr_y;
+            if (curr_y == wid){
+                curr_y = 0;
+                ++curr_x;
+            }
+        }
+    }
+
+
+
+
+
+    return g;
+}
+
 Game default_daichess(){
     Game g = Game(16, 16);
     std::string start[8][16] {
@@ -203,6 +324,12 @@ Game default_daichess(){
             g.promo["FN"] = std::make_pair(jon,1);
             g.promo["potent knight"] = std::make_pair(jon,0);
             g.promo["pony"] = std::make_pair(jon,0);
+        }
+        {   // WN
+            std::pair<std::string,std::string> jon = std::make_pair("WN ","WN");
+            g.promo["WN"] = std::make_pair(jon,1);
+            //g.promo["potent knight"] = std::make_pair(jon,0);
+            //g.promo["pony"] = std::make_pair(jon,0);
         }
         {   // WC / lightweight 
             std::pair<std::string,std::string> jon = std::make_pair("WC ","WC");
