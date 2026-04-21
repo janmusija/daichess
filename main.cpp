@@ -96,6 +96,6 @@ int main(int argc, char *argv[]){
             g.algebraic_history += "  " + gar + ". ";
         }
     }
-    std::cout << "\n" << g.algebraic_history_real << "\n";
+    //std::cout << "\n" << g.algebraic_history_real << "\n";
     return 0;
 }
