@@ -180,7 +180,7 @@ Game default_daichess(){
     std::string start[8][16] {
         // lowest y                                   //highest y
         {"WB","WDD","R","FAA","NB","HFD","ZNG","WAH","WAH","ZNG","HFD","NR","FAA","R","WDD","WB"}, // highest x
-        {"R","Z","FC","WFimW2imF2","FN","WC","B","Q","K","B","WC","FN","WFimW2imF2","FC","Z","R"},
+        {"R","Z","FC","WFimW2imF2","WN","WC","B","Q","K","B","WC","FN","WFimW2imF2","FC","Z","R"},
         {"FDimF2imD2","B","WAimW2imA2","NimN2","FDimF2imD2","WDimW2imD2","FimF2","NimN2","NimN2","FimF2","WDimW2imD2","FDimF2imD2","NimN2","WAimW2imA2","B","FDimF2imD2"},
         {"P","P","P","P","P","P","P","P","P","P","P","P","P","P","P","P"},
         {"","","","","","","","","","","","","","","",""},
@@ -197,7 +197,7 @@ Game default_daichess(){
     std::string namestart[16][16] {
         // lowest y                                   //highest y
         {"WB ","WDD"," R ","FAA","NB ","HFD","ZNG","WAH","WAH","ZNG","HFD","NR ","FAA"," R ","WDD","WB "}, // highest x
-        {" R "," Z ","FC ","WF ","FN ","WC "," B "," Q "," K "," B ","WC ","FN ","WF ","FC "," Z "," R "},
+        {" R "," Z ","FC ","WF ","WN ","WC "," B "," Q "," K "," B ","WC ","FN ","WF ","FC "," Z "," R "},
         {"FD "," B ","WA "," N ","FD ","WD "," F "," N "," N "," F ","WD ","FD "," N ","WA "," B ","FD "},
         {" P "," P "," P "," P "," P "," P "," P "," P "," P "," P "," P "," P "," P "," P "," P "," P "},
         {"","","","","","","","","","","","","","","",""},
