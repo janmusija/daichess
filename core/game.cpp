@@ -328,8 +328,8 @@ Game default_daichess(){
         {   // WN
             std::pair<std::string,std::string> jon = std::make_pair("WN ","WN");
             g.promo["WN"] = std::make_pair(jon,1);
-            //g.promo["potent knight"] = std::make_pair(jon,0);
-            //g.promo["pony"] = std::make_pair(jon,0);
+            g.promo["donkey"] = std::make_pair(jon,0);
+            g.promo["mule"] = std::make_pair(jon,0);
         }
         {   // WC / lightweight 
             std::pair<std::string,std::string> jon = std::make_pair("WC ","WC");
