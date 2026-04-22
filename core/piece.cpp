@@ -304,7 +304,7 @@ bool Piece::facing_AtR(const int x, const int y, int & _x_, int & _y_){ // trans
     return 1;
 }
 
-std::string prune_spaces(std::string s, char sep = ' '){
+std::string prune_spaces(std::string s, char sep){
     std::string t;
     for (unsigned int i = 0; i<s.length(); i++){
         if (s[i]!= sep){
